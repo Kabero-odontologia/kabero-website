@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Treatment {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  shortDesc String
+  fullDesc  String
+  gradient  String
+  photo     String?
+  heroPhoto String?
+  heroFocalPosition String?
+  teamPhoto String?
+  order     Int      @default(0)
+  visible   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  gallery     TreatmentGalleryImage[]
+  offers      TreatmentOffer[]
+  caseStudies CaseStudy[]
+}
+
+model TreatmentGalleryImage {
+  id          String    @id @default(cuid())
+  treatmentId String
+  treatment   Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+  url         String
+  order       Int       @default(0)
+}
+
+model TreatmentOffer {
+  id          String    @id @default(cuid())
+  treatmentId String
+  treatment   Treatment @relation(fields: [treatmentId], references: [id], onDelete: Cascade)
+  title       String
+  desc        String
+  order       Int       @default(0)
+}
+
+// Before/after case study. If treatmentId is set, the displayed tag is the
+// treatment's title (single source of truth). tagOverride is only used when
+// there's no associated treatment.
+model CaseStudy {
+  id          String     @id @default(cuid())
+  treatmentId String?
+  treatment   Treatment? @relation(fields: [treatmentId], references: [id], onDelete: SetNull)
+  tagOverride String?
+  beforePhoto String
+  afterPhoto  String
+  order       Int        @default(0)
+  visible     Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+}
+
+model FAQ {
+  id       String  @id @default(cuid())
+  question String
+  answer   String
+  order    Int     @default(0)
+  visible  Boolean @default(true)
+}
+
+model TeamMember {
+  id        String  @id @default(cuid())
+  name      String
+  specialty String
+  photo     String?
+  order     Int     @default(0)
+  visible   Boolean @default(true)
+}
+
+// One fixed row per weekday ("Mon".."Sun", matching Intl.DateTimeFormat output
+// used elsewhere in the app — no numeric-weekday conversion needed anywhere).
+// `ranges` is a JSON array of {start:"HH:MM", end:"HH:MM"} — both the display
+// schedule and the "open now" calculation derive from this single source.
+model BusinessHours {
+  weekday  String  @id
+  isClosed Boolean @default(false)
+  ranges   Json
+}
+
+model SiteSettings {
+  id              String  @id @default("singleton")
+  whatsappNumber  String
+  address         String
+  mapsQuery       String
+  mapsLink        String
+  facebookUrl     String?
+  instagramUrl    String?
+  linkedinUrl     String?
+  seoTitle        String
+  seoDescription  String
+}
+
+// Generic per-(page, key) content block for one-off text+image sections that
+// don't need list semantics (Hero, CTABand placements, CenteredHero placements,
+// intro text, etc). `content` shape is validated per-key by a zod schema in code.
+model PageSection {
+  id        String   @id @default(cuid())
+  page      String
+  key       String
+  visible   Boolean  @default(true)
+  order     Int      @default(0)
+  content   Json
+  updatedAt DateTime @updatedAt
+
+  @@unique([page, key])
+}
