@@ -2,8 +2,10 @@
 
 import { useActionState, useState } from "react";
 import Link from "next/link";
-import ImageUploadField from "@/components/admin/ImageUploadField";
+import ImageCropField from "@/components/admin/ImageCropField";
 import SavedToast from "@/components/admin/SavedToast";
+import FormSection from "@/components/admin/FormSection";
+import Switch from "@/components/admin/Switch";
 import { updateHistoriaSection, type SectionFormState } from "../actions";
 import type { HistoriaContent } from "@/lib/page-sections/sobre-nosotros";
 
@@ -30,59 +32,65 @@ export default function HistoriaSectionForm({ initial, visible: initialVisible }
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[560px]">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="eyebrow" className="text-title-lg font-medium text-white/60 tracking-wide">
-          ANTETÍTULO
-        </label>
-        <input
-          id="eyebrow"
-          name="eyebrow"
-          value={values.eyebrow}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
+    <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <FormSection className="lg:col-span-3" title="Contenido principal" description="El texto que aparece junto a la imagen.">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="eyebrow" className="text-title-lg font-medium text-white/60 tracking-wide">
+              ANTETÍTULO
+            </label>
+            <input
+              id="eyebrow"
+              name="eyebrow"
+              value={values.eyebrow}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="title" className="text-title-lg font-medium text-white/60 tracking-wide">
+              TÍTULO
+            </label>
+            <input
+              id="title"
+              name="title"
+              value={values.title}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="description" className="text-title-lg font-medium text-white/60 tracking-wide">
+              DESCRIPCIÓN
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              rows={9}
+              value={values.description}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection className="lg:col-span-2" title="Imagen" description="Se muestra al lado del texto.">
+          <ImageCropField name="photo" label="IMAGEN" defaultValue={initial.photo} desktopAspect={1.51} mobileAspect={1.59} />
+        </FormSection>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor="title" className="text-title-lg font-medium text-white/60 tracking-wide">
-          TÍTULO
-        </label>
-        <input
-          id="title"
-          name="title"
-          value={values.title}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="description" className="text-title-lg font-medium text-white/60 tracking-wide">
-          DESCRIPCIÓN
-        </label>
-        <textarea
-          id="description"
-          name="description"
-          rows={5}
-          value={values.description}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
-        />
-      </div>
-
-      <ImageUploadField name="photo" label="IMAGEN" defaultValue={initial.photo} />
-
-      <label className="flex items-center gap-3 cursor-pointer w-fit">
-        <input
-          type="checkbox"
+      <div className="flex flex-col gap-4">
+        <div className="h-px bg-white/[0.08]" />
+        <Switch
           name="visible"
           checked={visible}
-          onChange={(e) => setVisible(e.target.checked)}
-          className="w-5 h-5 rounded accent-white"
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta sección desaparece de la página."
         />
-        <span className="text-headline-sm text-white/70">Visible en el sitio público</span>
-      </label>
+      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

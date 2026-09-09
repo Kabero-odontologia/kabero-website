@@ -4,9 +4,12 @@ import CenteredHero from "@/components/sections/CenteredHero";
 import CTABand from "@/components/sections/CTABand";
 import CasesFilterGallery from "@/components/sections/CasesFilterGallery";
 import { prisma } from "@/lib/db";
+import { getPageSection } from "@/lib/page-sections";
+import { centeredHeroContentSchema, ctaBandContentSchema } from "@/lib/page-sections/shared";
+import { casosRealesEncabezadoDefault, casosRealesCtaBandDefault } from "@/lib/page-sections/casos-reales";
 
 export default async function CasosRealesPage() {
-  const [cases, treatments] = await Promise.all([
+  const [cases, treatments, encabezado, ctaBand] = await Promise.all([
     prisma.caseStudy.findMany({
       where: { visible: true },
       orderBy: { order: "asc" },
@@ -17,6 +20,8 @@ export default async function CasosRealesPage() {
       orderBy: { order: "asc" },
       select: { slug: true, title: true },
     }),
+    getPageSection("casos-reales", "centered-hero", centeredHeroContentSchema, casosRealesEncabezadoDefault),
+    getPageSection("casos-reales", "cta-band", ctaBandContentSchema, casosRealesCtaBandDefault),
   ]);
 
   const items = cases.map((c) => ({
@@ -32,20 +37,17 @@ export default async function CasosRealesPage() {
       <Header activePath="/casos-reales" />
       <main className="flex-1 bg-black-3">
         <div className="max-w-[1440px] mx-auto px-5 lg:px-14 py-10 flex flex-col gap-10">
-          <CenteredHero
-            eyebrow="CASOS REALES"
-            title="Antes y después de pacientes reales"
-            subtitle="Cada caso pasó por el mismo proceso de diagnóstico y diseño — así se ven los resultados."
-          />
+          {encabezado.visible && (
+            <CenteredHero
+              eyebrow={encabezado.content.eyebrow}
+              title={encabezado.content.title}
+              subtitle={encabezado.content.subtitle}
+            />
+          )}
 
           <CasesFilterGallery cases={items} treatments={treatments} />
 
-          <CTABand
-            headline="¿Querés resultados así?"
-            subtitle="Agendá tu diagnóstico y arrancamos con tu plan."
-            buttonLabel="Agendar consulta"
-            buttonHref="https://wa.me/59171796997"
-          />
+          {ctaBand.visible && <CTABand {...ctaBand.content} />}
         </div>
       </main>
       <Footer />

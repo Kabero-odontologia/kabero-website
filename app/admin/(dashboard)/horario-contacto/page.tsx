@@ -7,10 +7,10 @@ export default async function Page() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-display-sm font-bold text-white">Footer y contacto</h1>
+        <h1 className="text-display-sm font-bold text-white">Configuración del sitio</h1>
         <p className="text-headline-sm text-white/50 mt-1">
-          Ubicación, WhatsApp y redes sociales — se muestran en el pie de página de todo el sitio y en &quot;Visitanos&quot; del
-          Home. El horario semanal se agrega en una próxima fase.
+          SEO — cómo aparece el sitio en buscadores. La ubicación y el horario se editan en Visitanos, y el WhatsApp
+          y redes sociales en Footer.
         </p>
       </div>
       <SiteSettingsForm initial={settings} />

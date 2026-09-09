@@ -24,45 +24,46 @@ interface RepeatableItemListProps {
 // internal state via ImageUploadField.
 export default function RepeatableItemList({ items, namePrefix, onFieldChange }: RepeatableItemListProps) {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       {items.map((item, i) => (
-        <fieldset key={i} className="flex flex-col gap-4 bg-white/[0.03] border border-white/[0.08] rounded-lg p-5">
-          <legend className="px-1 text-title-lg font-semibold text-white/70 tracking-wide">
+        <fieldset
+          key={i}
+          className="flex flex-col gap-3 min-w-0 bg-white/[0.03] border border-white/[0.08] rounded-lg p-4 h-full"
+        >
+          <legend className="px-1 text-title-md font-semibold text-white/45 tracking-wide">
             PASO {item.num}
           </legend>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-title-md font-medium text-white/40 tracking-wide">TÍTULO</label>
+          <ImageUploadField name={namePrefix(i, "photo")} label="IMAGEN" defaultValue={item.photo} />
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-title-md text-white/35 tracking-wide">TÍTULO</label>
             <input
               name={namePrefix(i, "title")}
               value={item.title}
               onChange={(e) => onFieldChange(i, "title", e.target.value)}
-              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-2.5 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+              className="bg-white/[0.06] border border-white/10 rounded-md px-3 py-2 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-title-md font-medium text-white/40 tracking-wide">DESCRIPCIÓN</label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-title-md text-white/35 tracking-wide">DESCRIPCIÓN</label>
             <input
               name={namePrefix(i, "desc")}
               value={item.desc}
               onChange={(e) => onFieldChange(i, "desc", e.target.value)}
-              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-2.5 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+              className="bg-white/[0.06] border border-white/10 rounded-md px-3 py-2 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
             />
           </div>
 
-          <ImageUploadField name={namePrefix(i, "photo")} label="IMAGEN" defaultValue={item.photo} />
-
-          <div className="flex flex-col gap-2">
-            <label className="text-title-md font-medium text-white/40 tracking-wide">
-              TEXTO ALTERNATIVO DE LA IMAGEN
-            </label>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-title-md text-white/35 tracking-wide">TEXTO ALTERNATIVO</label>
             <input
               name={namePrefix(i, "alt")}
               value={item.alt}
               onChange={(e) => onFieldChange(i, "alt", e.target.value)}
-              placeholder="Describe la foto para lectores de pantalla"
-              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-2.5 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+              placeholder="Describe la foto"
+              className="bg-white/[0.06] border border-white/10 rounded-md px-3 py-2 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
             />
           </div>
         </fieldset>

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import SortableList from "@/components/admin/SortableList";
 import TreatmentRow from "./TreatmentRow";
+import { reorderTreatments } from "./actions";
 
 export default async function Page() {
   const treatments = await prisma.treatment.findMany({ orderBy: { order: "asc" } });
@@ -27,20 +29,11 @@ export default async function Page() {
           <span className="text-headline-md font-semibold text-white/80">Todavía no hay tratamientos cargados</span>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          {treatments.map((t, i) => (
-            <TreatmentRow
-              key={t.id}
-              id={t.id}
-              title={t.title}
-              shortDesc={t.shortDesc}
-              photo={t.photo}
-              visible={t.visible}
-              isFirst={i === 0}
-              isLast={i === treatments.length - 1}
-            />
+        <SortableList ids={treatments.map((t) => t.id)} onReorder={reorderTreatments} className="flex flex-col gap-3">
+          {treatments.map((t) => (
+            <TreatmentRow key={t.id} id={t.id} title={t.title} shortDesc={t.shortDesc} photo={t.photo} visible={t.visible} />
           ))}
-        </div>
+        </SortableList>
       )}
     </div>
   );

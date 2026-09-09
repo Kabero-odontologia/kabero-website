@@ -3,8 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTransition } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import DeleteButton from "@/components/admin/DeleteButton";
-import { deleteCaseStudy, toggleCaseStudyVisibility, moveCaseStudy } from "./actions";
+import DragHandleIcon from "@/components/admin/DragHandleIcon";
+import { deleteCaseStudy, toggleCaseStudyVisibility } from "./actions";
 
 interface CaseStudyRowProps {
   id: string;
@@ -12,23 +15,22 @@ interface CaseStudyRowProps {
   beforePhoto: string;
   afterPhoto: string;
   visible: boolean;
-  isFirst: boolean;
-  isLast: boolean;
 }
 
-export default function CaseStudyRow({
-  id,
-  tag,
-  beforePhoto,
-  afterPhoto,
-  visible,
-  isFirst,
-  isLast,
-}: CaseStudyRowProps) {
+export default function CaseStudyRow({ id, tag, beforePhoto, afterPhoto, visible }: CaseStudyRowProps) {
   const [pending, startTransition] = useTransition();
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+
+  const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
-    <div className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-lg p-4 flex flex-col gap-4">
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-lg p-4 flex flex-col gap-4 ${
+        isDragging ? "opacity-60 z-10 relative" : ""
+      }`}
+    >
       <div className="grid grid-cols-2 gap-2">
         <div className="relative aspect-[4/3] rounded-md overflow-hidden bg-white/[0.03]">
           <Image src={beforePhoto} alt="Antes" fill sizes="(max-width: 1280px) 45vw, 220px" className="object-cover" />
@@ -50,34 +52,15 @@ export default function CaseStudyRow({
       </div>
 
       <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/[0.06]">
-        <div className="flex gap-1">
-          <button
-            type="button"
-            disabled={isFirst || pending}
-            onClick={() =>
-              startTransition(() => {
-                moveCaseStudy(id, "up");
-              })
-            }
-            className="w-8 h-8 rounded flex items-center justify-center text-white/50 hover:bg-white/[0.08] hover:text-white disabled:opacity-25 disabled:hover:bg-transparent transition-colors"
-            aria-label="Mover arriba"
-          >
-            ↑
-          </button>
-          <button
-            type="button"
-            disabled={isLast || pending}
-            onClick={() =>
-              startTransition(() => {
-                moveCaseStudy(id, "down");
-              })
-            }
-            className="w-8 h-8 rounded flex items-center justify-center text-white/50 hover:bg-white/[0.08] hover:text-white disabled:opacity-25 disabled:hover:bg-transparent transition-colors"
-            aria-label="Mover abajo"
-          >
-            ↓
-          </button>
-        </div>
+        <button
+          type="button"
+          {...attributes}
+          {...listeners}
+          className="w-8 h-8 rounded flex items-center justify-center text-white/35 hover:bg-white/[0.08] hover:text-white/70 cursor-grab active:cursor-grabbing transition-colors touch-none"
+          aria-label="Arrastrar para reordenar"
+        >
+          <DragHandleIcon />
+        </button>
 
         <div className="flex items-center gap-1">
           <button

@@ -64,22 +64,10 @@ export async function toggleFAQVisibility(id: string, visible: boolean): Promise
   revalidateFAQ();
 }
 
-export async function moveFAQ(id: string, direction: "up" | "down"): Promise<void> {
+export async function reorderFAQs(orderedIds: string[]): Promise<void> {
   await requireAdminSession();
 
-  const all = await prisma.fAQ.findMany({ orderBy: { order: "asc" } });
-  const index = all.findIndex((f) => f.id === id);
-  if (index === -1) return;
-  const swapIndex = direction === "up" ? index - 1 : index + 1;
-  if (swapIndex < 0 || swapIndex >= all.length) return;
-
-  const a = all[index];
-  const b = all[swapIndex];
-
-  await prisma.$transaction([
-    prisma.fAQ.update({ where: { id: a.id }, data: { order: b.order } }),
-    prisma.fAQ.update({ where: { id: b.id }, data: { order: a.order } }),
-  ]);
+  await prisma.$transaction(orderedIds.map((id, order) => prisma.fAQ.update({ where: { id }, data: { order } })));
 
   revalidateFAQ();
 }

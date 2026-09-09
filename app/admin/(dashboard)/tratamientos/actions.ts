@@ -153,22 +153,12 @@ export async function toggleTreatmentVisibility(id: string, visible: boolean): P
   revalidateTreatments();
 }
 
-export async function moveTreatment(id: string, direction: "up" | "down"): Promise<void> {
+export async function reorderTreatments(orderedIds: string[]): Promise<void> {
   await requireAdminSession();
 
-  const all = await prisma.treatment.findMany({ orderBy: { order: "asc" } });
-  const index = all.findIndex((t) => t.id === id);
-  if (index === -1) return;
-  const swapIndex = direction === "up" ? index - 1 : index + 1;
-  if (swapIndex < 0 || swapIndex >= all.length) return;
-
-  const a = all[index];
-  const b = all[swapIndex];
-
-  await prisma.$transaction([
-    prisma.treatment.update({ where: { id: a.id }, data: { order: b.order } }),
-    prisma.treatment.update({ where: { id: b.id }, data: { order: a.order } }),
-  ]);
+  await prisma.$transaction(
+    orderedIds.map((id, order) => prisma.treatment.update({ where: { id }, data: { order } }))
+  );
 
   revalidateTreatments();
 }

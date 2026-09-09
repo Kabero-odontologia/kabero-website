@@ -103,22 +103,12 @@ export async function toggleCaseStudyVisibility(id: string, visible: boolean): P
   revalidatePath("/admin/casos-reales");
 }
 
-export async function moveCaseStudy(id: string, direction: "up" | "down"): Promise<void> {
+export async function reorderCaseStudies(orderedIds: string[]): Promise<void> {
   await requireAdminSession();
 
-  const all = await prisma.caseStudy.findMany({ orderBy: { order: "asc" } });
-  const index = all.findIndex((c) => c.id === id);
-  if (index === -1) return;
-  const swapIndex = direction === "up" ? index - 1 : index + 1;
-  if (swapIndex < 0 || swapIndex >= all.length) return;
-
-  const a = all[index];
-  const b = all[swapIndex];
-
-  await prisma.$transaction([
-    prisma.caseStudy.update({ where: { id: a.id }, data: { order: b.order } }),
-    prisma.caseStudy.update({ where: { id: b.id }, data: { order: a.order } }),
-  ]);
+  await prisma.$transaction(
+    orderedIds.map((id, order) => prisma.caseStudy.update({ where: { id }, data: { order } }))
+  );
 
   revalidatePublicPaths();
   revalidatePath("/admin/casos-reales");

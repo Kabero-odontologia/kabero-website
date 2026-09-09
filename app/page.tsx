@@ -9,14 +9,16 @@ import Contacto from "@/components/sections/Contacto";
 import CTABand from "@/components/sections/CTABand";
 import { getHomeSections } from "@/lib/page-sections/home";
 import { prisma } from "@/lib/db";
+import { getBusinessHours } from "@/lib/business-hours";
 
 const FALLBACK_MAPS_QUERY = "Kabero Odontología Estética, Cochabamba, Bolivia";
 const FALLBACK_MAPS_LINK = "https://maps.app.goo.gl/6iPZDSWXkv3w5TPW9";
 
 export default async function Home() {
-  const [sections, siteSettings] = await Promise.all([
+  const [sections, siteSettings, businessHours] = await Promise.all([
     getHomeSections(),
     prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
+    getBusinessHours(),
   ]);
 
   return (
@@ -39,6 +41,7 @@ export default async function Home() {
               content={sections.contacto.content}
               mapsQuery={siteSettings?.mapsQuery ?? FALLBACK_MAPS_QUERY}
               mapsLink={siteSettings?.mapsLink ?? FALLBACK_MAPS_LINK}
+              businessHours={businessHours}
             />
           )}
 

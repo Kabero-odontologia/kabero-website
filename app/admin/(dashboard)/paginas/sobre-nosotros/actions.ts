@@ -132,10 +132,13 @@ export async function updateLaboratorioSection(
     eyebrow: String(formData.get("eyebrow") ?? ""),
     title: String(formData.get("title") ?? ""),
     description: String(formData.get("description") ?? ""),
-    photo: String(formData.get("photo") ?? ""),
+    photos: [
+      String(formData.get("photo1") ?? ""),
+      String(formData.get("photo2") ?? ""),
+      String(formData.get("photo3") ?? ""),
+    ],
   });
-  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
-  if (!parsed.data.photo) return { error: "Subí la foto de esta sección." };
+  if (!parsed.success) return { error: "Subí las 3 fotos de esta sección." };
 
   await upsertSection("laboratorio", parsed.data, readVisible(formData));
   revalidateSobreNosotros();

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import SortableList from "@/components/admin/SortableList";
 import FAQRow from "./FAQRow";
+import { reorderFAQs } from "./actions";
 
 export default async function Page() {
   const faqs = await prisma.fAQ.findMany({ orderBy: { order: "asc" } });
@@ -25,18 +27,11 @@ export default async function Page() {
           <span className="text-headline-md font-semibold text-white/80">Todavía no hay preguntas cargadas</span>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
-          {faqs.map((f, i) => (
-            <FAQRow
-              key={f.id}
-              id={f.id}
-              question={f.question}
-              visible={f.visible}
-              isFirst={i === 0}
-              isLast={i === faqs.length - 1}
-            />
+        <SortableList ids={faqs.map((f) => f.id)} onReorder={reorderFAQs} className="flex flex-col gap-3">
+          {faqs.map((f) => (
+            <FAQRow key={f.id} id={f.id} question={f.question} visible={f.visible} />
           ))}
-        </div>
+        </SortableList>
       )}
     </div>
   );

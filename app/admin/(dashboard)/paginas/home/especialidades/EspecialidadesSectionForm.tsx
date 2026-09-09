@@ -4,6 +4,8 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import TreatmentMultiSelect from "@/components/admin/TreatmentMultiSelect";
 import SavedToast from "@/components/admin/SavedToast";
+import FormSection from "@/components/admin/FormSection";
+import Switch from "@/components/admin/Switch";
 import { updateEspecialidadesSection, type SectionFormState } from "../actions";
 import type { EspecialidadesContent } from "@/lib/page-sections/home";
 
@@ -31,79 +33,89 @@ export default function EspecialidadesSectionForm({
   });
   const [visible, setVisible] = useState(initialVisible);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[560px]">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="eyebrow" className="text-title-lg font-medium text-white/60 tracking-wide">
-          ANTETÍTULO
-        </label>
-        <input
-          id="eyebrow"
-          name="eyebrow"
-          value={values.eyebrow}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
+    <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <FormSection
+          className="lg:col-span-2"
+          title="Contenido principal"
+          description="El texto que aparece antes de la grilla de especialidades."
+        >
+          <div className="flex flex-col gap-2">
+            <label htmlFor="eyebrow" className="text-title-lg font-medium text-white/60 tracking-wide">
+              ANTETÍTULO
+            </label>
+            <input
+              id="eyebrow"
+              name="eyebrow"
+              value={values.eyebrow}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="title" className="text-title-lg font-medium text-white/60 tracking-wide">
+              TÍTULO
+            </label>
+            <input
+              id="title"
+              name="title"
+              value={values.title}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="subtitle" className="text-title-lg font-medium text-white/60 tracking-wide">
+              DESCRIPCIÓN
+            </label>
+            <textarea
+              id="subtitle"
+              name="subtitle"
+              rows={3}
+              value={values.subtitle}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
+            />
+          </div>
+
+          <p className="text-title-md text-white/35">
+            El botón &quot;Ver todo los tratamientos&quot; de esta sección no se puede cambiar.
+          </p>
+        </FormSection>
+
+        <FormSection
+          className="lg:col-span-3"
+          title="Especialidades destacadas"
+          description="Elegí entre 2 y 4 — se muestran en el orden en que las marques."
+        >
+          <TreatmentMultiSelect
+            name="treatmentIds"
+            treatments={treatments}
+            defaultSelectedIds={defaultSelectedIds}
+            min={2}
+            max={4}
+          />
+        </FormSection>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor="title" className="text-title-lg font-medium text-white/60 tracking-wide">
-          TÍTULO
-        </label>
-        <input
-          id="title"
-          name="title"
-          value={values.title}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="subtitle" className="text-title-lg font-medium text-white/60 tracking-wide">
-          DESCRIPCIÓN
-        </label>
-        <input
-          id="subtitle"
-          name="subtitle"
-          value={values.subtitle}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-medium text-white/60 tracking-wide">
-          ESPECIALIDADES DESTACADAS (2 a 4)
-        </span>
-        <TreatmentMultiSelect
-          name="treatmentIds"
-          treatments={treatments}
-          defaultSelectedIds={defaultSelectedIds}
-          min={2}
-          max={4}
-        />
-      </div>
-
-      <p className="text-title-md text-white/40">
-        El botón &quot;Ver todo los tratamientos&quot; de esta sección no se puede cambiar.
-      </p>
-
-      <label className="flex items-center gap-3 cursor-pointer w-fit">
-        <input
-          type="checkbox"
+      <div className="flex flex-col gap-4">
+        <div className="h-px bg-white/[0.08]" />
+        <Switch
           name="visible"
           checked={visible}
-          onChange={(e) => setVisible(e.target.checked)}
-          className="w-5 h-5 rounded accent-white"
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta sección desaparece del Home."
         />
-        <span className="text-headline-sm text-white/70">Visible en el sitio público</span>
-      </label>
+      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

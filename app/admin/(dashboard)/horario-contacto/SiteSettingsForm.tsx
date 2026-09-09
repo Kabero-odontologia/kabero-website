@@ -1,123 +1,60 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import FormSection from "@/components/admin/FormSection";
 import SavedToast from "@/components/admin/SavedToast";
-import { updateSiteSettings, type SiteSettingsFormState } from "./actions";
+import { updateSeo, type SiteSettingsFormState } from "./actions";
 import type { SiteSettings } from "@/lib/generated/prisma/client";
 
 const initialState: SiteSettingsFormState = {};
 
-function Field({
-  id,
-  label,
-  value,
-  onChange,
-  placeholder,
-}: {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-title-lg font-medium text-white/60 tracking-wide">
-        {label}
-      </label>
-      <input
-        id={id}
-        name={id}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-      />
-    </div>
-  );
-}
-
 export default function SiteSettingsForm({ initial }: { initial: SiteSettings }) {
-  const [state, formAction, pending] = useActionState(updateSiteSettings, initialState);
+  const [state, formAction, pending] = useActionState(updateSeo, initialState);
 
-  // Controlled fields: React 19 clears every uncontrolled `defaultValue` input
-  // after a form action runs (success OR error) — a controlled value survives
-  // that reset since React re-asserts it on the next render.
   const [values, setValues] = useState({
-    mapsQuery: initial.mapsQuery,
-    mapsLink: initial.mapsLink,
-    address: initial.address,
-    whatsappNumber: initial.whatsappNumber,
-    facebookUrl: initial.facebookUrl ?? "",
-    instagramUrl: initial.instagramUrl ?? "",
-    linkedinUrl: initial.linkedinUrl ?? "",
+    seoTitle: initial.seoTitle,
+    seoDescription: initial.seoDescription,
   });
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[560px]">
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-semibold text-white/80 tracking-wide">Ubicación</span>
-        <Field
-          id="mapsQuery"
-          label="TEXTO DE BÚSQUEDA EN GOOGLE MAPS"
-          value={values.mapsQuery}
-          onChange={handleChange}
-          placeholder="Nombre de la clínica, ciudad, país"
-        />
-        <Field
-          id="mapsLink"
-          label='LINK DEL BOTÓN "VER EN GOOGLE MAPS"'
-          value={values.mapsLink}
-          onChange={handleChange}
-          placeholder="https://maps.app.goo.gl/..."
-        />
-        <Field id="address" label="DIRECCIÓN (se muestra en el pie de página)" value={values.address} onChange={handleChange} />
-      </div>
+    <form action={formAction} className="flex flex-col gap-6 max-w-[900px]">
+      <FormSection
+        title="SEO"
+        description="Cómo aparece el sitio en Google y al compartirlo — no se ve en el sitio en sí."
+      >
+        <div className="flex flex-col gap-2">
+          <label htmlFor="seoTitle" className="text-title-lg font-medium text-white/60 tracking-wide">
+            TÍTULO PARA BUSCADORES
+          </label>
+          <input
+            id="seoTitle"
+            name="seoTitle"
+            value={values.seoTitle}
+            onChange={handleChange}
+            placeholder="Kabero — Odontología estética en Cochabamba"
+            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+          />
+        </div>
 
-      <div className="h-px bg-white/[0.08]" />
-
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-semibold text-white/80 tracking-wide">Contacto</span>
-        <Field
-          id="whatsappNumber"
-          label="WHATSAPP (con código de país, ej. +591...)"
-          value={values.whatsappNumber}
-          onChange={handleChange}
-        />
-      </div>
-
-      <div className="h-px bg-white/[0.08]" />
-
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-semibold text-white/80 tracking-wide">Redes sociales</span>
-        <span className="text-title-md text-white/40">Dejá el campo vacío para que no se muestre el ícono.</span>
-        <Field
-          id="facebookUrl"
-          label="FACEBOOK"
-          value={values.facebookUrl}
-          onChange={handleChange}
-          placeholder="https://facebook.com/..."
-        />
-        <Field
-          id="instagramUrl"
-          label="INSTAGRAM"
-          value={values.instagramUrl}
-          onChange={handleChange}
-          placeholder="https://instagram.com/..."
-        />
-        <Field
-          id="linkedinUrl"
-          label="LINKEDIN"
-          value={values.linkedinUrl}
-          onChange={handleChange}
-          placeholder="https://linkedin.com/..."
-        />
-      </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="seoDescription" className="text-title-lg font-medium text-white/60 tracking-wide">
+            DESCRIPCIÓN PARA BUSCADORES
+          </label>
+          <textarea
+            id="seoDescription"
+            name="seoDescription"
+            rows={3}
+            value={values.seoDescription}
+            onChange={handleChange}
+            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
+          />
+        </div>
+      </FormSection>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

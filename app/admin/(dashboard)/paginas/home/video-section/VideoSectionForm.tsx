@@ -2,9 +2,12 @@
 
 import { useActionState, useState } from "react";
 import Link from "next/link";
-import ImageUploadField from "@/components/admin/ImageUploadField";
+import ImageCropField from "@/components/admin/ImageCropField";
 import VideoUploadField from "@/components/admin/VideoUploadField";
 import SavedToast from "@/components/admin/SavedToast";
+import FormSection from "@/components/admin/FormSection";
+import SegmentedControl from "@/components/admin/SegmentedControl";
+import Switch from "@/components/admin/Switch";
 import { updateVideoSectionSection, type SectionFormState } from "../actions";
 import type { VideoSectionContent } from "@/lib/page-sections/home";
 
@@ -42,126 +45,152 @@ export default function VideoSectionForm({ initial, visible: initialVisible }: V
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[560px]">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="eyebrowDesktop" className="text-title-lg font-medium text-white/60 tracking-wide">
-          ANTETÍTULO (solo escritorio)
-        </label>
-        <input
-          id="eyebrowDesktop"
-          name="eyebrowDesktop"
-          value={values.eyebrowDesktop}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="heading" className="text-title-lg font-medium text-white/60 tracking-wide">
-          TÍTULO
-        </label>
-        <input
-          id="heading"
-          name="heading"
-          value={values.heading}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <ImageUploadField
-        name="backgroundPhoto"
-        label="IMAGEN DE FONDO (también se usa como portada del video)"
-        defaultValue={initial.backgroundPhoto}
-      />
-
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-medium text-white/60 tracking-wide">CONTENIDO</span>
-        <div className="flex gap-4">
-          <label className="flex items-center gap-2 cursor-pointer">
+    <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <FormSection
+          className="lg:col-span-2"
+          title="Contenido principal"
+          description="El texto que aparece sobre la imagen o el video."
+        >
+          <div className="flex flex-col gap-2">
+            <label htmlFor="eyebrowDesktop" className="text-title-lg font-medium text-white/60 tracking-wide">
+              ANTETÍTULO (solo escritorio)
+            </label>
             <input
-              type="radio"
-              name="mediaType"
-              value="image"
-              checked={mediaType === "image"}
-              onChange={() => setMediaType("image")}
-              className="w-4 h-4 accent-white"
-            />
-            <span className="text-headline-sm text-white/80">Solo imagen (sin botón de play)</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="radio"
-              name="mediaType"
-              value="video"
-              checked={mediaType === "video"}
-              onChange={() => setMediaType("video")}
-              className="w-4 h-4 accent-white"
-            />
-            <span className="text-headline-sm text-white/80">Video (se reproduce al tocar play)</span>
-          </label>
-        </div>
-      </div>
-
-      {mediaType === "video" && (
-        <VideoUploadField name="videoUrl" label="VIDEO" defaultValue={initial.videoUrl} />
-      )}
-
-      <div className="flex flex-col gap-3">
-        <span className="text-title-lg font-medium text-white/60 tracking-wide">FRANJA DE ESTADÍSTICAS</span>
-        {([1, 2, 3] as const).map((n) => (
-          <div key={n} className="grid grid-cols-3 gap-3">
-            <input
-              name={`stat${n}Value`}
-              value={values[`stat${n}Value`]}
+              id="eyebrowDesktop"
+              name="eyebrowDesktop"
+              value={values.eyebrowDesktop}
               onChange={handleChange}
-              placeholder="3+"
-              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-2.5 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-            />
-            <input
-              name={`stat${n}Label1`}
-              value={values[`stat${n}Label1`]}
-              onChange={handleChange}
-              placeholder="Línea 1"
-              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-2.5 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-            />
-            <input
-              name={`stat${n}Label2`}
-              value={values[`stat${n}Label2`]}
-              onChange={handleChange}
-              placeholder="Línea 2"
-              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-2.5 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
             />
           </div>
-        ))}
-        <div className="grid grid-cols-2 gap-3">
-          <input
-            name="locationLine1"
-            value={values.locationLine1}
-            onChange={handleChange}
-            placeholder="Cochabamba"
-            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-2.5 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="heading" className="text-title-lg font-medium text-white/60 tracking-wide">
+              TÍTULO
+            </label>
+            <input
+              id="heading"
+              name="heading"
+              value={values.heading}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <span className="text-title-lg font-medium text-white/60 tracking-wide">CONTENIDO</span>
+            <SegmentedControl
+              value={mediaType}
+              onChange={(v) => setMediaType(v as "image" | "video")}
+              options={[
+                { value: "image", label: "Solo imagen" },
+                { value: "video", label: "Video" },
+              ]}
+            />
+            <input type="hidden" name="mediaType" value={mediaType} />
+            <span className="text-title-md text-white/35">
+              {mediaType === "image" ? "No se muestra botón de play." : "Se reproduce al tocar play."}
+            </span>
+          </div>
+        </FormSection>
+
+        <FormSection
+          className="lg:col-span-3"
+          title="Multimedia"
+          description="La imagen (y el video, si elegís esa opción) que se ve en la sección."
+        >
+          <ImageCropField
+            name="backgroundPhoto"
+            label="IMAGEN DE FONDO (también se usa como portada del video)"
+            defaultValue={initial.backgroundPhoto}
+            desktopAspect={2.74}
+            mobileAspect={1.48}
           />
-          <input
-            name="locationLine2"
-            value={values.locationLine2}
-            onChange={handleChange}
-            placeholder="Bolivia"
-            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-2.5 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-          />
-        </div>
+
+          {mediaType === "video" && (
+            <VideoUploadField name="videoUrl" label="VIDEO" defaultValue={initial.videoUrl} />
+          )}
+        </FormSection>
       </div>
 
-      <label className="flex items-center gap-3 cursor-pointer w-fit">
-        <input
-          type="checkbox"
+      <FormSection title="Franja de estadísticas" description="Se muestran en fila, debajo de la imagen o el video.">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {([1, 2, 3] as const).map((n) => (
+            <fieldset key={n} className="flex flex-col gap-3 bg-white/[0.03] border border-white/[0.08] rounded-lg p-4">
+              <legend className="px-1 text-title-md font-semibold text-white/45 tracking-wide">
+                ESTADÍSTICA {n}
+              </legend>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-title-md text-white/35 tracking-wide">VALOR</label>
+                <input
+                  name={`stat${n}Value`}
+                  value={values[`stat${n}Value`]}
+                  onChange={handleChange}
+                  placeholder="3+"
+                  className="bg-white/[0.06] border border-white/10 rounded-md px-3 py-2 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-title-md text-white/35 tracking-wide">LÍNEA 1</label>
+                <input
+                  name={`stat${n}Label1`}
+                  value={values[`stat${n}Label1`]}
+                  onChange={handleChange}
+                  placeholder="Especialidades"
+                  className="bg-white/[0.06] border border-white/10 rounded-md px-3 py-2 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-title-md text-white/35 tracking-wide">LÍNEA 2</label>
+                <input
+                  name={`stat${n}Label2`}
+                  value={values[`stat${n}Label2`]}
+                  onChange={handleChange}
+                  placeholder="certificadas"
+                  className="bg-white/[0.06] border border-white/10 rounded-md px-3 py-2 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+                />
+              </div>
+            </fieldset>
+          ))}
+
+          <fieldset className="flex flex-col gap-3 bg-white/[0.03] border border-white/[0.08] rounded-lg p-4">
+            <legend className="px-1 text-title-md font-semibold text-white/45 tracking-wide">UBICACIÓN</legend>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-title-md text-white/35 tracking-wide">LÍNEA 1</label>
+              <input
+                name="locationLine1"
+                value={values.locationLine1}
+                onChange={handleChange}
+                placeholder="Cochabamba"
+                className="bg-white/[0.06] border border-white/10 rounded-md px-3 py-2 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <label className="text-title-md text-white/35 tracking-wide">LÍNEA 2</label>
+              <input
+                name="locationLine2"
+                value={values.locationLine2}
+                onChange={handleChange}
+                placeholder="Bolivia"
+                className="bg-white/[0.06] border border-white/10 rounded-md px-3 py-2 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
+            <span className="text-title-md text-white/30">Se muestra al final de la franja.</span>
+          </fieldset>
+        </div>
+      </FormSection>
+
+      <div className="flex flex-col gap-4">
+        <div className="h-px bg-white/[0.08]" />
+        <Switch
           name="visible"
           checked={visible}
-          onChange={(e) => setVisible(e.target.checked)}
-          className="w-5 h-5 rounded accent-white"
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta sección desaparece del Home."
         />
-        <span className="text-headline-sm text-white/70">Visible en el sitio público</span>
-      </label>
+      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

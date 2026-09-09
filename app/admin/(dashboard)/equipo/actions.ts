@@ -11,7 +11,7 @@ export interface TeamMemberFormState {
 
 function revalidateEquipo() {
   revalidatePath("/sobre-nosotros");
-  revalidatePath("/admin/equipo");
+  revalidatePath("/admin/paginas/sobre-nosotros/equipo");
 }
 
 function readTeamMemberForm(formData: FormData) {
@@ -38,7 +38,7 @@ export async function createTeamMember(
   });
 
   revalidateEquipo();
-  redirect("/admin/equipo");
+  redirect("/admin/paginas/sobre-nosotros/equipo");
 }
 
 export async function updateTeamMember(
@@ -55,7 +55,7 @@ export async function updateTeamMember(
   await prisma.teamMember.update({ where: { id }, data: { name, specialty, photo, visible } });
 
   revalidateEquipo();
-  redirect("/admin/equipo");
+  redirect("/admin/paginas/sobre-nosotros/equipo");
 }
 
 export async function deleteTeamMember(id: string): Promise<void> {
@@ -70,22 +70,12 @@ export async function toggleTeamMemberVisibility(id: string, visible: boolean): 
   revalidateEquipo();
 }
 
-export async function moveTeamMember(id: string, direction: "up" | "down"): Promise<void> {
+export async function reorderTeamMembers(orderedIds: string[]): Promise<void> {
   await requireAdminSession();
 
-  const all = await prisma.teamMember.findMany({ orderBy: { order: "asc" } });
-  const index = all.findIndex((m) => m.id === id);
-  if (index === -1) return;
-  const swapIndex = direction === "up" ? index - 1 : index + 1;
-  if (swapIndex < 0 || swapIndex >= all.length) return;
-
-  const a = all[index];
-  const b = all[swapIndex];
-
-  await prisma.$transaction([
-    prisma.teamMember.update({ where: { id: a.id }, data: { order: b.order } }),
-    prisma.teamMember.update({ where: { id: b.id }, data: { order: a.order } }),
-  ]);
+  await prisma.$transaction(
+    orderedIds.map((id, order) => prisma.teamMember.update({ where: { id }, data: { order } }))
+  );
 
   revalidateEquipo();
 }

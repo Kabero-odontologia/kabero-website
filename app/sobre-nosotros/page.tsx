@@ -1,4 +1,5 @@
 import Image from "next/image";
+import CroppedImage from "@/components/CroppedImage";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CenteredHero from "@/components/sections/CenteredHero";
@@ -57,13 +58,7 @@ export default async function SobreNosotrosPage() {
                 <p className="text-headline-sm lg:text-headline-md text-black-8">{historia.content.description}</p>
               </div>
               <div className="order-1 lg:order-2 relative lg:flex-1 w-full h-[220px] lg:h-[420px] rounded-[20px] lg:rounded-[28px] overflow-hidden shrink-0">
-                <Image
-                  src={historia.content.photo}
-                  alt="Recepción de la clínica"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                />
+                <CroppedImage src={historia.content.photo} alt="Recepción de la clínica" sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
             </section>
           )}
@@ -120,7 +115,7 @@ export default async function SobreNosotrosPage() {
             </section>
           )}
 
-          {equipoIntro.visible && (
+          {equipoIntro.visible && teamMembers.length > 0 && (
             <section className="flex flex-col gap-4 lg:gap-8">
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-2 lg:gap-4">
                 <div className="flex flex-col gap-2">
@@ -133,51 +128,49 @@ export default async function SobreNosotrosPage() {
                   {equipoIntro.content.subtitle}
                 </span>
               </div>
-              {teamMembers.length === 0 ? (
-                <p className="text-headline-sm text-black-8 py-10 text-center">Todavía no hay personas cargadas.</p>
-              ) : (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-                  {teamMembers.map((m) => (
-                    <div key={m.id} className="flex flex-col gap-3 lg:gap-4">
-                      <div className="relative w-full h-[140px] lg:h-auto lg:aspect-[411/390] rounded-[14px] lg:rounded-lg overflow-hidden">
-                        <Image
-                          src={m.photo ?? "/hero-team.jpg"}
-                          alt={m.name}
-                          fill
-                          sizes="(max-width: 768px) 50vw, 33vw"
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-headline-sm lg:text-headline-lg font-bold text-black-11">{m.name}</span>
-                        <span className="text-title-lg lg:text-headline-sm text-black-8 lg:text-black-7">
-                          {m.specialty}
-                        </span>
-                      </div>
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                {teamMembers.map((m) => (
+                  <div key={m.id} className="flex flex-col gap-3 lg:gap-4">
+                    <div className="relative w-full h-[140px] lg:h-auto lg:aspect-[411/390] rounded-[14px] lg:rounded-lg overflow-hidden">
+                      <CroppedImage src={m.photo ?? "/hero-team.jpg"} alt={m.name} sizes="(max-width: 768px) 50vw, 33vw" />
                     </div>
-                  ))}
-                </div>
-              )}
+                    <div className="flex flex-col gap-1">
+                      <span className="text-headline-sm lg:text-headline-lg font-bold text-black-11">{m.name}</span>
+                      <span className="text-title-lg lg:text-headline-sm text-black-8 lg:text-black-7">
+                        {m.specialty}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </section>
           )}
 
           {laboratorio.visible && (
-            <section className="flex flex-col lg:flex-row gap-5 lg:gap-14 items-center">
-              <div className="order-2 lg:order-1 lg:flex-1 flex flex-col gap-4">
-                <div className="flex flex-col gap-2">
-                  <span className="text-title-lg font-medium text-orange-6 tracking-wide">{laboratorio.content.eyebrow}</span>
-                  <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">{laboratorio.content.title}</h2>
-                </div>
-                <p className="text-headline-sm lg:text-headline-md text-black-8">{laboratorio.content.description}</p>
+            <section className="flex flex-col gap-4 lg:gap-8">
+              <div className="flex flex-col gap-2">
+                <span className="text-title-lg font-medium text-orange-6 tracking-wide">{laboratorio.content.eyebrow}</span>
+                <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">{laboratorio.content.title}</h2>
+                <p className="text-headline-sm lg:text-headline-md text-black-8 max-w-[720px]">
+                  {laboratorio.content.description}
+                </p>
               </div>
-              <div className="order-1 lg:order-2 relative lg:flex-1 w-full h-[220px] lg:h-[420px] rounded-[20px] lg:rounded-[28px] overflow-hidden shrink-0">
-                <Image
-                  src={laboratorio.content.photo}
-                  alt={laboratorio.content.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                />
+              <div className="flex gap-3 lg:gap-4 w-full h-[220px] lg:h-[420px]">
+                <div className="relative flex-[1.6] h-full rounded-[16px] lg:rounded-[24px] overflow-hidden">
+                  <CroppedImage
+                    src={laboratorio.content.photos[0]}
+                    alt={laboratorio.content.title}
+                    sizes="(max-width: 768px) 55vw, 45vw"
+                  />
+                </div>
+                <div className="flex flex-1 flex-col gap-3 lg:gap-4 h-full">
+                  <div className="relative flex-1 rounded-[16px] lg:rounded-[24px] overflow-hidden">
+                    <CroppedImage src={laboratorio.content.photos[1]} alt="" sizes="(max-width: 768px) 30vw, 25vw" />
+                  </div>
+                  <div className="relative flex-1 rounded-[16px] lg:rounded-[24px] overflow-hidden">
+                    <CroppedImage src={laboratorio.content.photos[2]} alt="" sizes="(max-width: 768px) 30vw, 25vw" />
+                  </div>
+                </div>
               </div>
             </section>
           )}

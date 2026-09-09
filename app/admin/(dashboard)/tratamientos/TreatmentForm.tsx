@@ -3,8 +3,12 @@
 import { useActionState, useState } from "react";
 import Link from "next/link";
 import ImageUploadField from "@/components/admin/ImageUploadField";
+import ImageCropField from "@/components/admin/ImageCropField";
 import DynamicImageList from "@/components/admin/DynamicImageList";
 import DynamicTextPairList from "@/components/admin/DynamicTextPairList";
+import FormSection from "@/components/admin/FormSection";
+import Switch from "@/components/admin/Switch";
+import FocalPointPicker from "@/components/admin/FocalPointPicker";
 import type { TreatmentFormState } from "./actions";
 
 export interface TreatmentInitial {
@@ -67,134 +71,137 @@ export default function TreatmentForm({ action, initial = emptyInitial, submitLa
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[640px]">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-          <label htmlFor="title" className="text-title-lg font-medium text-white/60 tracking-wide">
-            TÍTULO
-          </label>
-          <input
-            id="title"
-            name="title"
-            value={values.title}
-            onChange={handleChange}
-            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="slug" className="text-title-lg font-medium text-white/60 tracking-wide">
-            SLUG (parte de la URL)
-          </label>
-          <input
-            id="slug"
-            name="slug"
-            value={values.slug}
-            onChange={handleChange}
-            placeholder="mi-tratamiento"
-            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-          />
-        </div>
+    <form action={formAction} className="flex flex-col gap-6 max-w-[1200px]">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <FormSection
+          className="lg:col-span-2"
+          title="Información básica"
+          description="Lo que se muestra en tarjetas, listados y en la página del tratamiento."
+        >
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="title" className="text-title-lg font-medium text-white/60 tracking-wide">
+                TÍTULO
+              </label>
+              <input
+                id="title"
+                name="title"
+                value={values.title}
+                onChange={handleChange}
+                className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="slug" className="text-title-lg font-medium text-white/60 tracking-wide">
+                SLUG (URL)
+              </label>
+              <input
+                id="slug"
+                name="slug"
+                value={values.slug}
+                onChange={handleChange}
+                placeholder="mi-tratamiento"
+                className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="shortDesc" className="text-title-lg font-medium text-white/60 tracking-wide">
+              DESCRIPCIÓN CORTA (tarjetas y listados)
+            </label>
+            <input
+              id="shortDesc"
+              name="shortDesc"
+              value={values.shortDesc}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="fullDesc" className="text-title-lg font-medium text-white/60 tracking-wide">
+              DESCRIPCIÓN COMPLETA
+            </label>
+            <textarea
+              id="fullDesc"
+              name="fullDesc"
+              rows={7}
+              value={values.fullDesc}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="gradient" className="text-title-lg font-medium text-white/60 tracking-wide">
+              DEGRADÉ DE RESPALDO (cuando no hay foto)
+            </label>
+            <input
+              id="gradient"
+              name="gradient"
+              value={values.gradient}
+              onChange={handleChange}
+              placeholder="bg-gradient-to-br from-orange-3 to-orange-6"
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white/80 placeholder:text-white/30 outline-none focus:border-white/30 transition-colors font-mono text-[13px]"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection className="lg:col-span-3" title="Imágenes" description="Las fotos que representan a este tratamiento.">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <ImageCropField
+              name="photo"
+              label="FOTO PRINCIPAL (tarjetas y listados)"
+              defaultValue={initial.photo}
+              desktopAspect={2.12}
+              mobileAspect={2.18}
+              clearable
+            />
+            <div className="flex flex-col gap-2">
+              <ImageUploadField
+                name="heroPhoto"
+                label="FOTO DEL BANNER (si no hay, usa la principal)"
+                defaultValue={initial.heroPhoto}
+                clearable
+              />
+              <div className="flex flex-col gap-1.5">
+                <span className="text-title-md text-white/35 tracking-wide">PUNTO DE ENFOQUE (solo si el banner se ve mal recortado)</span>
+                <FocalPointPicker
+                  name="heroFocalPosition"
+                  value={values.heroFocalPosition}
+                  onChange={(v) => setValues((prev) => ({ ...prev, heroFocalPosition: v }))}
+                />
+              </div>
+            </div>
+            <ImageUploadField name="teamPhoto" label="FOTO DE EQUIPO (grilla en Sobre nosotros)" defaultValue={initial.teamPhoto} clearable />
+          </div>
+        </FormSection>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor="shortDesc" className="text-title-lg font-medium text-white/60 tracking-wide">
-          DESCRIPCIÓN CORTA (tarjetas y listados)
-        </label>
-        <input
-          id="shortDesc"
-          name="shortDesc"
-          value={values.shortDesc}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="fullDesc" className="text-title-lg font-medium text-white/60 tracking-wide">
-          DESCRIPCIÓN COMPLETA (página del tratamiento)
-        </label>
-        <textarea
-          id="fullDesc"
-          name="fullDesc"
-          rows={4}
-          value={values.fullDesc}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="gradient" className="text-title-lg font-medium text-white/60 tracking-wide">
-          DEGRADÉ DE RESPALDO (cuando no hay foto)
-        </label>
-        <input
-          id="gradient"
-          name="gradient"
-          value={values.gradient}
-          onChange={handleChange}
-          placeholder="bg-gradient-to-br from-orange-3 to-orange-6"
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white/80 placeholder:text-white/30 outline-none focus:border-white/30 transition-colors font-mono text-[13px]"
-        />
-      </div>
-
-      <div className="h-px bg-white/[0.08]" />
-
-      <ImageUploadField name="photo" label="FOTO PRINCIPAL (tarjetas y listados)" defaultValue={initial.photo} clearable />
-      <ImageUploadField
-        name="heroPhoto"
-        label="FOTO DEL BANNER (si no hay, usa la principal)"
-        defaultValue={initial.heroPhoto}
-        clearable
-      />
-      <div className="flex flex-col gap-2">
-        <label htmlFor="heroFocalPosition" className="text-title-lg font-medium text-white/60 tracking-wide">
-          ENCUADRE DEL BANNER (opcional, ej. &quot;50% 25%&quot;)
-        </label>
-        <input
-          id="heroFocalPosition"
-          name="heroFocalPosition"
-          value={values.heroFocalPosition}
-          onChange={handleChange}
-          placeholder="center"
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white/80 placeholder:text-white/30 outline-none focus:border-white/30 transition-colors font-mono text-[13px]"
-        />
-        <span className="text-title-md text-white/40">
-          Solo hace falta tocarlo si la foto del banner se ve mal recortada.
-        </span>
-      </div>
-      <ImageUploadField name="teamPhoto" label="FOTO DE EQUIPO (grilla en Sobre nosotros)" defaultValue={initial.teamPhoto} clearable />
-
-      <div className="h-px bg-white/[0.08]" />
-
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-medium text-white/60 tracking-wide">
-          GALERÍA (mínimo 5 fotos para que se muestre)
-        </span>
+      <FormSection title="Galería" description="Mínimo 5 fotos para que se muestre en la página del tratamiento.">
         <DynamicImageList name="gallery" defaultValues={initial.gallery} />
-      </div>
+      </FormSection>
 
-      <div className="h-px bg-white/[0.08]" />
-
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-medium text-white/60 tracking-wide">QUÉ INCLUYE</span>
+      <FormSection title="Qué incluye" description="La lista de ítems que se muestra en la página del tratamiento.">
         <DynamicTextPairList
           titleName="offerTitle"
           descName="offerDesc"
           itemLabel="ítem"
           defaultValues={initial.offers}
         />
-      </div>
+      </FormSection>
 
-      <label className="flex items-center gap-3 cursor-pointer w-fit">
-        <input
-          type="checkbox"
+      <div className="flex flex-col gap-4">
+        <div className="h-px bg-white/[0.08]" />
+        <Switch
           name="visible"
           checked={visible}
-          onChange={(e) => setVisible(e.target.checked)}
-          className="w-5 h-5 rounded accent-white"
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, este tratamiento desaparece del sitio."
         />
-        <span className="text-headline-sm text-white/70">Visible en el sitio público</span>
-      </label>
+      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

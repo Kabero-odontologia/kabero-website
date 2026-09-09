@@ -4,6 +4,8 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 import SavedToast from "@/components/admin/SavedToast";
+import FormSection from "@/components/admin/FormSection";
+import Switch from "@/components/admin/Switch";
 import { updateFundadorSection, type SectionFormState } from "../actions";
 import type { FundadorContent } from "@/lib/page-sections/sobre-nosotros";
 
@@ -39,81 +41,87 @@ export default function FundadorSectionForm({ initial, visible: initialVisible }
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[560px]">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="eyebrow" className="text-title-lg font-medium text-white/60 tracking-wide">
-          ANTETÍTULO
-        </label>
-        <input
-          id="eyebrow"
-          name="eyebrow"
-          value={values.eyebrow}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
+    <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <FormSection className="max-w-[640px]" title="Encabezado" description="El antetítulo y el título de la sección.">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="eyebrow" className="text-title-lg font-medium text-white/60 tracking-wide">
+              ANTETÍTULO
+            </label>
+            <input
+              id="eyebrow"
+              name="eyebrow"
+              value={values.eyebrow}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="sectionTitle" className="text-title-lg font-medium text-white/60 tracking-wide">
+              TÍTULO DE LA SECCIÓN
+            </label>
+            <input
+              id="sectionTitle"
+              name="sectionTitle"
+              value={values.sectionTitle}
+              onChange={handleChange}
+              placeholder="Fundador"
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+        </div>
+      </FormSection>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <FormSection className="lg:col-span-3" title="Perfil" description="Nombre, cargo y biografía del fundador.">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="name" className="text-title-lg font-medium text-white/60 tracking-wide">
+              NOMBRE
+            </label>
+            <input
+              id="name"
+              name="name"
+              value={values.name}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="role" className="text-title-lg font-medium text-white/60 tracking-wide">
+              CARGO
+            </label>
+            <input
+              id="role"
+              name="role"
+              value={values.role}
+              onChange={handleChange}
+              placeholder="Odontología estética · Fundador de Kabero"
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="bio" className="text-title-lg font-medium text-white/60 tracking-wide">
+              BIOGRAFÍA
+            </label>
+            <textarea
+              id="bio"
+              name="bio"
+              rows={8}
+              value={values.bio}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection className="lg:col-span-2" title="Foto" description="Se muestra junto al perfil.">
+          <ImageUploadField name="photo" label="FOTO" defaultValue={initial.photo} />
+        </FormSection>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor="sectionTitle" className="text-title-lg font-medium text-white/60 tracking-wide">
-          TÍTULO DE LA SECCIÓN
-        </label>
-        <input
-          id="sectionTitle"
-          name="sectionTitle"
-          value={values.sectionTitle}
-          onChange={handleChange}
-          placeholder="Fundador"
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="h-px bg-white/[0.08]" />
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="name" className="text-title-lg font-medium text-white/60 tracking-wide">
-          NOMBRE
-        </label>
-        <input
-          id="name"
-          name="name"
-          value={values.name}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="role" className="text-title-lg font-medium text-white/60 tracking-wide">
-          CARGO
-        </label>
-        <input
-          id="role"
-          name="role"
-          value={values.role}
-          onChange={handleChange}
-          placeholder="Odontología estética · Fundador de Kabero"
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="bio" className="text-title-lg font-medium text-white/60 tracking-wide">
-          BIOGRAFÍA
-        </label>
-        <textarea
-          id="bio"
-          name="bio"
-          rows={4}
-          value={values.bio}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
-        />
-      </div>
-
-      <ImageUploadField name="photo" label="FOTO" defaultValue={initial.photo} />
-
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-medium text-white/60 tracking-wide">ETIQUETAS (especialidades)</span>
+      <FormSection title="Etiquetas" description="Las especialidades que se muestran como chips debajo de la biografía.">
         <div className="flex flex-col gap-2">
           {tags.map((tag) => (
             <div key={tag.id} className="flex items-center gap-2">
@@ -140,18 +148,18 @@ export default function FundadorSectionForm({ initial, visible: initialVisible }
         >
           + Agregar etiqueta
         </button>
-      </div>
+      </FormSection>
 
-      <label className="flex items-center gap-3 cursor-pointer w-fit">
-        <input
-          type="checkbox"
+      <div className="flex flex-col gap-4">
+        <div className="h-px bg-white/[0.08]" />
+        <Switch
           name="visible"
           checked={visible}
-          onChange={(e) => setVisible(e.target.checked)}
-          className="w-5 h-5 rounded accent-white"
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta sección desaparece de la página."
         />
-        <span className="text-headline-sm text-white/70">Visible en el sitio público</span>
-      </label>
+      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

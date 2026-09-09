@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import CroppedImage from "@/components/CroppedImage";
 
 interface CaseCardProps {
   tag: string;
@@ -78,22 +79,18 @@ export default function CaseCard({
           onPointerDown={onPointerDown}
           className="relative w-full h-[190px] rounded-[16px] overflow-hidden cursor-ew-resize touch-none select-none"
         >
-          <Image
+          <CroppedImage
             src={afterPhoto}
             alt="Después del tratamiento"
-            fill
-            draggable={false}
             sizes="(max-width: 768px) 90vw, 390px"
-            className="object-cover object-center pointer-events-none"
+            className="pointer-events-none"
           />
           <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}>
-            <Image
+            <CroppedImage
               src={beforePhoto}
               alt="Antes del tratamiento"
-              fill
-              draggable={false}
               sizes="(max-width: 768px) 90vw, 390px"
-              className="object-cover object-center pointer-events-none"
+              className="pointer-events-none"
             />
           </div>
           <div

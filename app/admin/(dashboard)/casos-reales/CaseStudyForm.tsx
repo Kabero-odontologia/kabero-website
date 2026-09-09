@@ -2,7 +2,9 @@
 
 import { useActionState, useState } from "react";
 import Link from "next/link";
-import ImageUploadField from "@/components/admin/ImageUploadField";
+import ImageCropField from "@/components/admin/ImageCropField";
+import FormSection from "@/components/admin/FormSection";
+import Switch from "@/components/admin/Switch";
 import type { CaseStudyFormState } from "./actions";
 
 interface CaseStudyFormProps {
@@ -30,58 +32,76 @@ export default function CaseStudyForm({ action, treatments, initial, submitLabel
   const [visible, setVisible] = useState(initial?.visible ?? true);
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[640px]">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="treatmentId" className="text-title-lg font-medium text-white/60 tracking-wide">
-          TRATAMIENTO ASOCIADO
-        </label>
-        <select
-          id="treatmentId"
-          name="treatmentId"
-          value={treatmentId}
-          onChange={(e) => setTreatmentId(e.target.value)}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 focus:bg-white/[0.09] transition-colors"
-        >
-          <option value="" className="bg-[#151517]">
-            — Sin tratamiento (usar etiqueta personalizada) —
-          </option>
-          {treatments.map((t) => (
-            <option key={t.id} value={t.id} className="bg-[#151517]">
-              {t.title}
-            </option>
-          ))}
-        </select>
+    <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <FormSection title="Detalles" description="Qué tratamiento representa este caso.">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="treatmentId" className="text-title-lg font-medium text-white/60 tracking-wide">
+              TRATAMIENTO ASOCIADO
+            </label>
+            <select
+              id="treatmentId"
+              name="treatmentId"
+              value={treatmentId}
+              onChange={(e) => setTreatmentId(e.target.value)}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 focus:bg-white/[0.09] transition-colors"
+            >
+              <option value="" className="bg-[#151517]">
+                — Sin tratamiento (usar etiqueta personalizada) —
+              </option>
+              {treatments.map((t) => (
+                <option key={t.id} value={t.id} className="bg-[#151517]">
+                  {t.title}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="tagOverride" className="text-title-lg font-medium text-white/60 tracking-wide">
+              ETIQUETA PERSONALIZADA (si no elegís un tratamiento)
+            </label>
+            <input
+              id="tagOverride"
+              name="tagOverride"
+              value={tagOverride}
+              onChange={(e) => setTagOverride(e.target.value)}
+              placeholder="Ej: Blanqueamiento dental"
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 focus:bg-white/[0.09] transition-colors"
+            />
+          </div>
+        </FormSection>
+
+        <FormSection title="Fotos" description="Antes y después del mismo ángulo y encuadre, si es posible.">
+          <div className="grid grid-cols-2 gap-4">
+            <ImageCropField
+              name="beforePhoto"
+              label="ANTES"
+              defaultValue={initial?.beforePhoto}
+              desktopAspect={1.91}
+              mobileAspect={1.51}
+            />
+            <ImageCropField
+              name="afterPhoto"
+              label="DESPUÉS"
+              defaultValue={initial?.afterPhoto}
+              desktopAspect={1.91}
+              mobileAspect={1.51}
+            />
+          </div>
+        </FormSection>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <label htmlFor="tagOverride" className="text-title-lg font-medium text-white/60 tracking-wide">
-          ETIQUETA PERSONALIZADA (si no elegís un tratamiento)
-        </label>
-        <input
-          id="tagOverride"
-          name="tagOverride"
-          value={tagOverride}
-          onChange={(e) => setTagOverride(e.target.value)}
-          placeholder="Ej: Blanqueamiento dental"
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 focus:bg-white/[0.09] transition-colors"
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-6">
-        <ImageUploadField name="beforePhoto" label="FOTO ANTES" defaultValue={initial?.beforePhoto} />
-        <ImageUploadField name="afterPhoto" label="FOTO DESPUÉS" defaultValue={initial?.afterPhoto} />
-      </div>
-
-      <label className="flex items-center gap-3 cursor-pointer w-fit">
-        <input
-          type="checkbox"
+      <div className="flex flex-col gap-4">
+        <div className="h-px bg-white/[0.08]" />
+        <Switch
           name="visible"
           checked={visible}
-          onChange={(e) => setVisible(e.target.checked)}
-          className="w-5 h-5 rounded accent-white"
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, este caso desaparece del sitio."
         />
-        <span className="text-headline-sm text-white/70">Visible en el sitio público</span>
-      </label>
+      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import CroppedImage from "@/components/CroppedImage";
 
 interface TreatmentCardProps {
   slug: string;
@@ -17,13 +18,7 @@ export default function TreatmentCard({ slug, title, desc, photo, gradient }: Tr
     >
       <div className={`relative h-[160px] lg:h-[200px] shrink-0 ${!photo ? gradient : ""}`}>
         {photo && (
-          <Image
-            src={photo}
-            alt={title}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover"
-          />
+          <CroppedImage src={photo} alt={title} sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
         )}
         <span className="absolute left-4 lg:left-5 -bottom-[22px] lg:-bottom-[26px] w-11 h-11 lg:w-[52px] lg:h-[52px] rounded-full bg-orange-2 border-[3px] border-black-1 flex items-center justify-center">
           <Image src="/icon-dentist.svg" alt="" width={20} height={20} className="w-5 h-5 lg:w-6 lg:h-6" />

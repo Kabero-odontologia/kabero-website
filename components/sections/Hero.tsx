@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Button from "@/components/ui/Button";
+import CroppedImage from "@/components/CroppedImage";
 import type { HeroContent } from "@/lib/page-sections/home";
 
 function Badge({ number, label }: { number: string; label: [string, string] }) {
@@ -18,14 +18,7 @@ function Badge({ number, label }: { number: string; label: [string, string] }) {
 function TeamPhoto({ photo, className }: { photo: string; className?: string }) {
   return (
     <div className={className}>
-      <Image
-        src={photo}
-        alt="Equipo Kabero"
-        fill
-        sizes="(max-width: 768px) 100vw, 651px"
-        className="object-cover object-[47%_39%]"
-        priority
-      />
+      <CroppedImage src={photo} alt="Equipo Kabero" sizes="(max-width: 768px) 100vw, 651px" priority />
     </div>
   );
 }

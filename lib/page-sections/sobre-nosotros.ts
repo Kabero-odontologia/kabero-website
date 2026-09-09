@@ -70,7 +70,7 @@ export const laboratorioContentSchema = z.object({
   eyebrow: z.string().min(1),
   title: z.string().min(1),
   description: z.string().min(1),
-  photo: z.string().min(1),
+  photos: z.array(z.string().min(1)).length(3),
 });
 export type LaboratorioContent = z.infer<typeof laboratorioContentSchema>;
 
@@ -79,7 +79,7 @@ export const laboratorioDefault: LaboratorioContent = {
   title: "Precisión de principio a fin",
   description:
     "Trabajamos con tecnología de escaneo y diseño digital propia, para que cada prótesis, carilla o alineador se fabrique con el mismo estándar de detalle que tu diagnóstico inicial.",
-  photo: "/hero-team.jpg",
+  photos: ["/hero-team.jpg", "/hero-team.jpg", "/hero-team.jpg"],
 };
 
 // --- Diferenciales -----------------------------------------------------

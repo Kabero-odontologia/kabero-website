@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
+import SortableList from "@/components/admin/SortableList";
 import CaseStudyRow from "./CaseStudyRow";
+import { reorderCaseStudies } from "./actions";
 
 export default async function Page() {
   const cases = await prisma.caseStudy.findMany({
@@ -33,8 +35,13 @@ export default async function Page() {
           </span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {cases.map((c, i) => (
+        <SortableList
+          ids={cases.map((c) => c.id)}
+          onReorder={reorderCaseStudies}
+          strategy="grid"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
+        >
+          {cases.map((c) => (
             <CaseStudyRow
               key={c.id}
               id={c.id}
@@ -42,11 +49,9 @@ export default async function Page() {
               beforePhoto={c.beforePhoto}
               afterPhoto={c.afterPhoto}
               visible={c.visible}
-              isFirst={i === 0}
-              isLast={i === cases.length - 1}
             />
           ))}
-        </div>
+        </SortableList>
       )}
     </div>
   );

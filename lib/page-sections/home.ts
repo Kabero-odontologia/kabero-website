@@ -22,7 +22,7 @@ export const heroDefault: HeroContent = {
   eyebrow: "ODONTOLOGÍA ESTÉTICA · DR. CABERO",
   title: "Tu sonrisa, rediseñada con precisión",
   subtitle: "Diagnóstico digital y planificación milimétrica, con un enfoque estético pensado para tu sonrisa.",
-  photo: "/hero-team.jpg",
+  photo: "/hero-team.jpg?dx=47&dy=39&mx=47&my=39",
   badgeNumber: "3",
   badgeLabel: ["especialidades", "certificadas"],
 };

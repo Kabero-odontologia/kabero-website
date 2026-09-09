@@ -4,6 +4,8 @@ import { useActionState, useState } from "react";
 import Link from "next/link";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 import SavedToast from "@/components/admin/SavedToast";
+import FormSection from "@/components/admin/FormSection";
+import Switch from "@/components/admin/Switch";
 import type { CtaBandContent } from "@/lib/page-sections/shared";
 
 interface SectionFormState {
@@ -36,106 +38,113 @@ export default function CtaBandSectionForm({ action, initial, visible: initialVi
     buttonHref: initial.buttonHref,
   });
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
     setValues((prev) => ({ ...prev, [name]: value }));
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[560px]">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="headline" className="text-title-lg font-medium text-white/60 tracking-wide">
-          TÍTULO
-        </label>
-        <input
-          id="headline"
-          name="headline"
-          value={values.headline}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label htmlFor="subtitle" className="text-title-lg font-medium text-white/60 tracking-wide">
-          DESCRIPCIÓN
-        </label>
-        <input
-          id="subtitle"
-          name="subtitle"
-          value={values.subtitle}
-          onChange={handleChange}
-          className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <div className="flex flex-col gap-2">
-          <label htmlFor="buttonLabel" className="text-title-lg font-medium text-white/60 tracking-wide">
-            TEXTO DEL BOTÓN
-          </label>
-          <input
-            id="buttonLabel"
-            name="buttonLabel"
-            value={values.buttonLabel}
-            onChange={handleChange}
-            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="buttonHref" className="text-title-lg font-medium text-white/60 tracking-wide">
-            LINK DEL BOTÓN
-          </label>
-          <input
-            id="buttonHref"
-            name="buttonHref"
-            value={values.buttonHref}
-            onChange={handleChange}
-            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-          />
-        </div>
-      </div>
-
-      <ImageUploadField name="backgroundImage" label="IMAGEN DE FONDO (opcional)" defaultValue={initial.backgroundImage} clearable />
-
-      <div className="flex flex-col gap-2">
-        <span className="text-title-lg font-medium text-white/60 tracking-wide">
-          DEGRADÉ (se usa solo si no hay imagen de fondo)
-        </span>
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2">
+    <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <FormSection title="Texto y botón" description="El mensaje y el llamado a la acción del banner.">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="headline" className="text-title-lg font-medium text-white/60 tracking-wide">
+              TÍTULO
+            </label>
             <input
-              type="color"
-              name="backgroundFrom"
-              value={backgroundFrom}
-              onChange={(e) => setBackgroundFrom(e.target.value)}
-              className="w-10 h-10 rounded-md border border-white/10 bg-transparent cursor-pointer"
+              id="headline"
+              name="headline"
+              value={values.headline}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
             />
-            <span className="text-title-md text-white/50">Arriba</span>
-          </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="color"
-              name="backgroundTo"
-              value={backgroundTo}
-              onChange={(e) => setBackgroundTo(e.target.value)}
-              className="w-10 h-10 rounded-md border border-white/10 bg-transparent cursor-pointer"
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="subtitle" className="text-title-lg font-medium text-white/60 tracking-wide">
+              DESCRIPCIÓN
+            </label>
+            <textarea
+              id="subtitle"
+              name="subtitle"
+              rows={3}
+              value={values.subtitle}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors resize-none"
             />
-            <span className="text-title-md text-white/50">Abajo</span>
-          </label>
-        </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex flex-col gap-2">
+              <label htmlFor="buttonLabel" className="text-title-lg font-medium text-white/60 tracking-wide">
+                TEXTO DEL BOTÓN
+              </label>
+              <input
+                id="buttonLabel"
+                name="buttonLabel"
+                value={values.buttonLabel}
+                onChange={handleChange}
+                className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="buttonHref" className="text-title-lg font-medium text-white/60 tracking-wide">
+                LINK DEL BOTÓN
+              </label>
+              <input
+                id="buttonHref"
+                name="buttonHref"
+                value={values.buttonHref}
+                onChange={handleChange}
+                className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
+          </div>
+        </FormSection>
+
+        <FormSection title="Fondo" description="Una imagen, o un degradé si no hay imagen cargada.">
+          <ImageUploadField name="backgroundImage" label="IMAGEN DE FONDO (opcional)" defaultValue={initial.backgroundImage} clearable />
+
+          <div className="flex flex-col gap-2">
+            <span className="text-title-lg font-medium text-white/60 tracking-wide">
+              DEGRADÉ (se usa solo si no hay imagen de fondo)
+            </span>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="color"
+                  name="backgroundFrom"
+                  value={backgroundFrom}
+                  onChange={(e) => setBackgroundFrom(e.target.value)}
+                  className="w-10 h-10 rounded-md border border-white/10 bg-transparent cursor-pointer"
+                />
+                <span className="text-title-md text-white/50">Arriba</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="color"
+                  name="backgroundTo"
+                  value={backgroundTo}
+                  onChange={(e) => setBackgroundTo(e.target.value)}
+                  className="w-10 h-10 rounded-md border border-white/10 bg-transparent cursor-pointer"
+                />
+                <span className="text-title-md text-white/50">Abajo</span>
+              </label>
+            </div>
+          </div>
+        </FormSection>
       </div>
 
-      <label className="flex items-center gap-3 cursor-pointer w-fit">
-        <input
-          type="checkbox"
+      <div className="flex flex-col gap-4">
+        <div className="h-px bg-white/[0.08]" />
+        <Switch
           name="visible"
           checked={visible}
-          onChange={(e) => setVisible(e.target.checked)}
-          className="w-5 h-5 rounded accent-white"
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, este banner desaparece de la página."
         />
-        <span className="text-headline-sm text-white/70">Visible en el sitio público</span>
-      </label>
+      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

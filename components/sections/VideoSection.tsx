@@ -1,4 +1,4 @@
-import Image from "next/image";
+import CroppedImage from "@/components/CroppedImage";
 import VideoLightboxButton from "@/components/sections/VideoLightboxButton";
 import type { VideoSectionContent } from "@/lib/page-sections/home";
 
@@ -12,13 +12,7 @@ export default function VideoSection({ content }: { content: VideoSectionContent
         {/* Mobile layout: video card, then a separate stacked stats card below */}
         <div className="flex lg:hidden flex-col gap-5">
           <div className="relative h-[238px] rounded-[24px] border border-black-4 overflow-hidden">
-            <Image
-              src={content.backgroundPhoto}
-              alt="Interior de la clínica Kabero"
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
+            <CroppedImage src={content.backgroundPhoto} alt="Interior de la clínica Kabero" sizes="100vw" />
             <div className="absolute inset-0 bg-black/35" />
             <div className="relative h-full flex flex-col items-center justify-center gap-5 px-6 text-center">
               <h2 className="text-display-sm font-bold text-black-1 [text-shadow:0px_4px_14px_rgba(0,0,0,0.25)]">
@@ -48,13 +42,7 @@ export default function VideoSection({ content }: { content: VideoSectionContent
         {/* Desktop layout: video card with the stats bar overlapping its bottom edge */}
         <div className="hidden lg:block relative h-[485px]">
           <div className="absolute inset-0 rounded-[32px] overflow-hidden">
-            <Image
-              src={content.backgroundPhoto}
-              alt="Interior de la clínica Kabero"
-              fill
-              sizes="100vw"
-              className="object-cover"
-            />
+            <CroppedImage src={content.backgroundPhoto} alt="Interior de la clínica Kabero" sizes="100vw" />
             <div className="absolute inset-0 bg-black/35" />
 
             <div className="relative h-full flex flex-col items-center justify-center gap-5 px-6 text-center">

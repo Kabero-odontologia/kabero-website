@@ -2,31 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ContactoContent } from "@/lib/page-sections/home";
+import { WEEKDAY_LABELS, formatDayHours, isOpenAt, type BusinessHoursDay } from "@/lib/business-hours-shared";
 
 const SCHEDULE_CARD_WIDTH = 628;
 
-const schedule: [string, string][] = [
-  ["Lunes", "08:00 – 16:00"],
-  ["Martes", "09:00–13:00 y 15:00–19:00"],
-  ["Miércoles", "08:00 – 16:00"],
-  ["Jueves", "09:00–13:00 y 15:00–19:00"],
-  ["Viernes", "08:00 – 16:00"],
-  ["Sábado", "09:00 – 13:00"],
-  ["Domingo", "Cerrado"],
-];
-
-// Minutes-since-midnight ranges per weekday (Bolivia local time), used only to compute open/closed.
-const hoursByWeekday: Record<string, [number, number][]> = {
-  Mon: [[8 * 60, 16 * 60]],
-  Tue: [[9 * 60, 13 * 60], [15 * 60, 19 * 60]],
-  Wed: [[8 * 60, 16 * 60]],
-  Thu: [[9 * 60, 13 * 60], [15 * 60, 19 * 60]],
-  Fri: [[8 * 60, 16 * 60]],
-  Sat: [[9 * 60, 13 * 60]],
-  Sun: [],
-};
-
-function isOpenNowInBolivia(): boolean {
+function isOpenNowInBolivia(hours: BusinessHoursDay[]): boolean {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/La_Paz",
     weekday: "short",
@@ -36,8 +16,7 @@ function isOpenNowInBolivia(): boolean {
   }).formatToParts(new Date());
   const map = Object.fromEntries(parts.map((p) => [p.type, p.value]));
   const nowMinutes = parseInt(map.hour, 10) * 60 + parseInt(map.minute, 10);
-  const ranges = hoursByWeekday[map.weekday] ?? [];
-  return ranges.some(([start, end]) => nowMinutes >= start && nowMinutes < end);
+  return isOpenAt(hours, map.weekday, nowMinutes);
 }
 
 function IconClock({ className = "" }: { className?: string }) {
@@ -49,16 +28,16 @@ function IconClock({ className = "" }: { className?: string }) {
   );
 }
 
-function StatusBadge() {
+function StatusBadge({ hours }: { hours: BusinessHoursDay[] }) {
   const [open, setOpen] = useState<boolean | null>(null);
 
   useEffect(() => {
     // Reads the real wall clock, so it can only be known client-side after mount (avoids SSR/hydration mismatch).
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setOpen(isOpenNowInBolivia());
-    const id = setInterval(() => setOpen(isOpenNowInBolivia()), 60_000);
+    setOpen(isOpenNowInBolivia(hours));
+    const id = setInterval(() => setOpen(isOpenNowInBolivia(hours)), 60_000);
     return () => clearInterval(id);
-  }, []);
+  }, [hours]);
 
   if (open === null) return <span className="h-[34px] lg:h-[34px]" />;
 
@@ -88,7 +67,15 @@ function MapEmbed({ mapsQuery, className = "" }: { mapsQuery: string; className?
   );
 }
 
-function ScheduleCard({ mapsLink, className = "" }: { mapsLink: string; className?: string }) {
+function ScheduleCard({
+  mapsLink,
+  hours,
+  className = "",
+}: {
+  mapsLink: string;
+  hours: BusinessHoursDay[];
+  className?: string;
+}) {
   return (
     <div className={`bg-black-11 rounded-[22px] lg:rounded-xl p-5 lg:p-8 flex flex-col gap-3 ${className}`}>
       <div className="flex items-center justify-between gap-3">
@@ -98,19 +85,22 @@ function ScheduleCard({ mapsLink, className = "" }: { mapsLink: string; classNam
           </span>
           <span className="text-headline-md font-semibold text-black-1">Horario de atención</span>
         </div>
-        <StatusBadge />
+        <StatusBadge hours={hours} />
       </div>
 
       <div className="h-px bg-black-1/20 lg:bg-black-1 w-full" />
 
-      {schedule.map(([day, hours]) => (
-        <div key={day} className="flex justify-between lg:px-4 py-2 lg:rounded-[8px] text-headline-sm">
-          <span className="text-black-1">{day}</span>
-          <span className={hours === "Cerrado" ? "text-black-6 lg:text-black-8" : "text-black-1 font-semibold"}>
-            {hours}
-          </span>
-        </div>
-      ))}
+      {hours.map((day) => {
+        const label = formatDayHours(day);
+        return (
+          <div key={day.weekday} className="flex justify-between lg:px-4 py-2 lg:rounded-[8px] text-headline-sm">
+            <span className="text-black-1">{WEEKDAY_LABELS[day.weekday]}</span>
+            <span className={label === "Cerrado" ? "text-black-6 lg:text-black-8" : "text-black-1 font-semibold"}>
+              {label}
+            </span>
+          </div>
+        );
+      })}
 
       <div className="h-px bg-black-1/20 lg:bg-black-1 w-full" />
 
@@ -148,9 +138,10 @@ interface ContactoProps {
   content: ContactoContent;
   mapsQuery: string;
   mapsLink: string;
+  businessHours: BusinessHoursDay[];
 }
 
-export default function Contacto({ content, mapsQuery, mapsLink }: ContactoProps) {
+export default function Contacto({ content, mapsQuery, mapsLink, businessHours }: ContactoProps) {
   const mobileCardRef = useRef<HTMLDivElement>(null);
   const [mobileCardHeight, setMobileCardHeight] = useState(508); // measured fallback, corrected on mount/resize
 
@@ -188,7 +179,7 @@ export default function Contacto({ content, mapsQuery, mapsLink }: ContactoProps
             className="absolute inset-0 pointer-events-none bg-gradient-to-b from-white/0 to-[#EAEAEA]/40"
           />
           <div ref={mobileCardRef} className="relative">
-            <ScheduleCard mapsLink={mapsLink} />
+            <ScheduleCard mapsLink={mapsLink} hours={businessHours} />
           </div>
         </div>
       </div>
@@ -208,7 +199,7 @@ export default function Contacto({ content, mapsQuery, mapsLink }: ContactoProps
                 "linear-gradient(90.42deg, rgba(255,255,255,0) 40.658%, rgb(234,234,234) 99.836%)",
             }}
           />
-          <ScheduleCard mapsLink={mapsLink} className="relative w-[628px] shrink-0" />
+          <ScheduleCard mapsLink={mapsLink} hours={businessHours} className="relative w-[628px] shrink-0" />
         </div>
       </div>
     </section>

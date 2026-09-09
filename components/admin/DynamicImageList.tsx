@@ -20,20 +20,20 @@ export default function DynamicImageList({ name, defaultValues }: DynamicImageLi
 
   return (
     <div className="flex flex-col gap-4">
-      {items.map((item, i) => (
-        <div key={item.id} className="flex items-end gap-3">
-          <div className="flex-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {items.map((item, i) => (
+          <div key={item.id} className="flex flex-col gap-2 min-w-0 bg-white/[0.03] border border-white/[0.08] rounded-lg p-4">
             <ImageUploadField name={name} label={`IMAGEN ${i + 1}`} defaultValue={item.value} clearable />
+            <button
+              type="button"
+              onClick={() => setItems((prev) => prev.filter((x) => x.id !== item.id))}
+              className="self-start px-2 text-title-md font-medium text-red-400/70 hover:text-red-400 transition-colors"
+            >
+              Quitar de la galería
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => setItems((prev) => prev.filter((x) => x.id !== item.id))}
-            className="px-3 py-2.5 rounded-md text-title-md font-medium text-red-400/80 hover:bg-red-500/10 hover:text-red-400 transition-colors"
-          >
-            Quitar
-          </button>
-        </div>
-      ))}
+        ))}
+      </div>
       <button
         type="button"
         onClick={() => setItems((prev) => [...prev, { id: idCounter++, value: "" }])}
