@@ -161,17 +161,24 @@ async function backfillCaseStudy() {
 
 async function backfillTreatments() {
   const allRows = await prisma.treatment.findMany({ include: { offers: true } });
+  // Each treatment's own translations and its offers' translations are
+  // independent — a treatment can already be fully translated while one of
+  // its offers still isn't (e.g. left over from an earlier rate-limited run),
+  // so filter each level separately instead of gating offers behind the
+  // parent treatment needing work too.
   const rows = allRows
-    .filter((r) => r.translations === null)
-    .map((r) => ({ ...r, offers: r.offers.filter((o) => o.translations === null) }));
+    .map((r) => ({ ...r, offers: r.offers.filter((o) => o.translations === null) }))
+    .filter((r) => r.translations === null || r.offers.length > 0);
   console.log(`Treatment: ${rows.length} row(s) to translate`);
   for (const row of rows) {
-    const translations = await translateFields({
-      title: row.title,
-      shortDesc: row.shortDesc,
-      fullDesc: row.fullDesc,
-    });
-    await prisma.treatment.update({ where: { id: row.id }, data: { translations } });
+    if (row.translations === null) {
+      const translations = await translateFields({
+        title: row.title,
+        shortDesc: row.shortDesc,
+        fullDesc: row.fullDesc,
+      });
+      await prisma.treatment.update({ where: { id: row.id }, data: { translations } });
+    }
 
     for (const offer of row.offers) {
       const offerTranslations = await translateFields({ title: offer.title, desc: offer.desc });
