@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Button from "@/components/ui/Button";
 import CroppedImage from "@/components/CroppedImage";
 import type { HeroContent } from "@/lib/page-sections/home";
@@ -16,14 +17,16 @@ function Badge({ number, label }: { number: string; label: [string, string] }) {
 }
 
 function TeamPhoto({ photo, className }: { photo: string; className?: string }) {
+  const tAlt = useTranslations("Alt");
   return (
     <div className={className}>
-      <CroppedImage src={photo} alt="Equipo Kabero" sizes="(max-width: 768px) 100vw, 651px" priority />
+      <CroppedImage src={photo} alt={tAlt("equipoKabero")} sizes="(max-width: 768px) 100vw, 651px" priority />
     </div>
   );
 }
 
 export default function Hero({ content }: { content: HeroContent }) {
+  const t = useTranslations("Hero");
   return (
     <section className="relative z-10 w-full bg-black-1 rounded-b-[28px] lg:rounded-b-[32px] shadow-[0px_16px_40px_0px_rgba(0,0,0,0.05)]">
       <div className="max-w-[1440px] mx-auto px-5 lg:px-14 py-8 lg:py-12">
@@ -47,10 +50,10 @@ export default function Hero({ content }: { content: HeroContent }) {
 
           <div className="flex flex-col gap-3 items-stretch w-full mt-2">
             <Button href="https://wa.me/59171796997" variant="primary" size="sm" className="w-full">
-              Contactanos
+              {t("contactanos")}
             </Button>
             <Button href="/tratamientos" variant="outline" size="sm" className="w-full">
-              Ver tratamientos
+              {t("verTratamientos")}
             </Button>
           </div>
         </div>
@@ -65,10 +68,10 @@ export default function Hero({ content }: { content: HeroContent }) {
             <p className="text-headline-md text-black-8 max-w-[460px]">{content.subtitle}</p>
             <div className="flex gap-4 items-center">
               <Button href="https://wa.me/59171796997" variant="primary" size="sm">
-                Contactanos
+                {t("contactanos")}
               </Button>
               <Button href="/tratamientos" variant="outline" size="sm">
-                Ver tratamientos
+                {t("verTratamientos")}
               </Button>
             </div>
           </div>

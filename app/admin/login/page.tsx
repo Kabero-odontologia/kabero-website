@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useActionState } from "react";
+import PasswordField from "@/components/admin/PasswordField";
 import { loginAction, type LoginState } from "./actions";
 
 const initialState: LoginState = {};
@@ -49,20 +50,13 @@ export default function AdminLoginPage() {
             />
           </div>
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="password" className="text-title-lg font-medium text-white/60 tracking-wide">
-              CONTRASEÑA
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 focus:bg-white/[0.09] transition-colors"
-              placeholder="••••••••"
-            />
-          </div>
+          <PasswordField
+            id="password"
+            label="CONTRASEÑA"
+            autoComplete="current-password"
+            placeholder="••••••••"
+            required
+          />
 
           {state?.error && (
             <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

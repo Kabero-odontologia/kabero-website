@@ -26,8 +26,8 @@ export interface BusinessHoursDay {
   ranges: TimeRange[];
 }
 
-export function formatDayHours(day: BusinessHoursDay): string {
-  if (day.isClosed || day.ranges.length === 0) return "Cerrado";
+export function formatDayHours(day: BusinessHoursDay, closedLabel: string): string {
+  if (day.isClosed || day.ranges.length === 0) return closedLabel;
   return day.ranges.map((r) => `${r.start} – ${r.end}`).join(" y ");
 }
 

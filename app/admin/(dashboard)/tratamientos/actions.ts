@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 import { requireAdminSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { translateFields } from "@/lib/translate";
+import { revalidateLocalized } from "@/lib/page-sections";
 
 export interface TreatmentFormState {
   error?: string;
@@ -12,10 +14,10 @@ export interface TreatmentFormState {
 const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 function revalidateTreatments() {
-  revalidatePath("/tratamientos");
-  revalidatePath("/tratamientos/[slug]", "page");
-  revalidatePath("/");
-  revalidatePath("/casos-reales");
+  revalidateLocalized("/tratamientos");
+  revalidatePath("/[locale]/tratamientos/[slug]", "page");
+  revalidateLocalized("/");
+  revalidateLocalized("/casos-reales");
   revalidatePath("/admin/tratamientos");
 }
 
@@ -58,6 +60,18 @@ function readTreatmentForm(formData: FormData) {
   };
 }
 
+// Translates the treatment's own fields and every offer's fields together, in
+// parallel — offers are deleted and recreated on every save anyway (see
+// `offers: { deleteMany, create }` below), so there's no incremental
+// translation to preserve, just translate whatever is being written now.
+async function translateTreatment(data: ReturnType<typeof readTreatmentForm>) {
+  const [treatmentTranslations, offerTranslations] = await Promise.all([
+    translateFields({ title: data.title, shortDesc: data.shortDesc, fullDesc: data.fullDesc }),
+    Promise.all(data.offers.map((o) => translateFields({ title: o.title, desc: o.desc }))),
+  ]);
+  return { treatmentTranslations, offerTranslations };
+}
+
 function validateTreatmentForm(data: ReturnType<typeof readTreatmentForm>): string | null {
   if (!data.title || !data.slug || !data.shortDesc || !data.fullDesc || !data.gradient) {
     return "Completá título, slug, descripción corta, descripción completa y degradé.";
@@ -82,6 +96,7 @@ export async function createTreatment(
   if (existing) return { error: "Ya existe un tratamiento con ese slug." };
 
   const maxOrder = await prisma.treatment.aggregate({ _max: { order: true } });
+  const { treatmentTranslations, offerTranslations } = await translateTreatment(data);
 
   await prisma.treatment.create({
     data: {
@@ -96,8 +111,11 @@ export async function createTreatment(
       heroFocalPosition: data.heroFocalPosition,
       visible: data.visible,
       order: (maxOrder._max.order ?? -1) + 1,
+      translations: treatmentTranslations,
       gallery: { create: data.gallery.map((url, order) => ({ url, order })) },
-      offers: { create: data.offers.map((o, order) => ({ ...o, order })) },
+      offers: {
+        create: data.offers.map((o, order) => ({ ...o, order, translations: offerTranslations[order] })),
+      },
     },
   });
 
@@ -119,6 +137,8 @@ export async function updateTreatment(
   const existing = await prisma.treatment.findUnique({ where: { slug: data.slug } });
   if (existing && existing.id !== id) return { error: "Ya existe un tratamiento con ese slug." };
 
+  const { treatmentTranslations, offerTranslations } = await translateTreatment(data);
+
   await prisma.treatment.update({
     where: { id },
     data: {
@@ -132,8 +152,12 @@ export async function updateTreatment(
       teamPhoto: data.teamPhoto,
       heroFocalPosition: data.heroFocalPosition,
       visible: data.visible,
+      translations: treatmentTranslations,
       gallery: { deleteMany: {}, create: data.gallery.map((url, order) => ({ url, order })) },
-      offers: { deleteMany: {}, create: data.offers.map((o, order) => ({ ...o, order })) },
+      offers: {
+        deleteMany: {},
+        create: data.offers.map((o, order) => ({ ...o, order, translations: offerTranslations[order] })),
+      },
     },
   });
 

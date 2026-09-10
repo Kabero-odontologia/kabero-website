@@ -4,15 +4,17 @@ import { prisma } from "@/lib/db";
 import { requireAdminSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { translateFields } from "@/lib/translate";
+import { revalidateLocalized } from "@/lib/page-sections";
 
 export interface CaseStudyFormState {
   error?: string;
 }
 
 function revalidatePublicPaths() {
-  revalidatePath("/");
-  revalidatePath("/casos-reales");
-  revalidatePath("/tratamientos/[slug]", "page");
+  revalidateLocalized("/");
+  revalidateLocalized("/casos-reales");
+  revalidatePath("/[locale]/tratamientos/[slug]", "page");
 }
 
 function readCaseStudyForm(formData: FormData) {
@@ -40,15 +42,18 @@ export async function createCaseStudy(
   }
 
   const maxOrder = await prisma.caseStudy.aggregate({ _max: { order: true } });
+  const finalTagOverride = treatmentId ? null : tagOverride;
+  const translations = finalTagOverride ? await translateFields({ tagOverride: finalTagOverride }) : undefined;
 
   await prisma.caseStudy.create({
     data: {
       treatmentId,
-      tagOverride: treatmentId ? null : tagOverride,
+      tagOverride: finalTagOverride,
       beforePhoto,
       afterPhoto,
       visible,
       order: (maxOrder._max.order ?? -1) + 1,
+      translations,
     },
   });
 
@@ -73,14 +78,18 @@ export async function updateCaseStudy(
     return { error: "Elegí un tratamiento o escribí una etiqueta personalizada." };
   }
 
+  const finalTagOverride = treatmentId ? null : tagOverride;
+  const translations = finalTagOverride ? await translateFields({ tagOverride: finalTagOverride }) : undefined;
+
   await prisma.caseStudy.update({
     where: { id },
     data: {
       treatmentId,
-      tagOverride: treatmentId ? null : tagOverride,
+      tagOverride: finalTagOverride,
       beforePhoto,
       afterPhoto,
       visible,
+      translations,
     },
   });
 

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface AboutTreatmentProps {
   title: string;
@@ -8,11 +9,12 @@ interface AboutTreatmentProps {
 }
 
 export default function AboutTreatment({ title, fullDesc, gallery, gradient }: AboutTreatmentProps) {
+  const t = useTranslations("AboutTreatment");
   const hasGallery = gallery && gallery.length >= 5;
 
   return (
     <section className="flex flex-col gap-4 lg:gap-6 items-start w-full">
-      <h2 className="text-headline-md lg:text-display-sm font-bold text-black-11">Sobre el tratamiento</h2>
+      <h2 className="text-headline-md lg:text-display-sm font-bold text-black-11">{t("title")}</h2>
       <p className="text-headline-sm lg:text-headline-md text-black-8 max-w-[900px]">{fullDesc}</p>
 
       {hasGallery ? (

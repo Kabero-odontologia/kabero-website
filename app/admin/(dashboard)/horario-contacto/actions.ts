@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 import { requireAdminSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { WEEKDAYS } from "@/lib/business-hours-shared";
+import { translateFields } from "@/lib/translate";
+import { revalidateLocalized } from "@/lib/page-sections";
 
 export interface SiteSettingsFormState {
   error?: string;
@@ -11,7 +13,7 @@ export interface SiteSettingsFormState {
 }
 
 function revalidateSite() {
-  revalidatePath("/");
+  revalidateLocalized("/");
   revalidatePath("/admin/paginas/home/contacto");
   revalidatePath("/admin/horario-contacto");
   revalidatePath("/admin/configuracion-sitio");
@@ -74,7 +76,8 @@ export async function updateSeo(
     return { error: "Completá el título y la descripción para buscadores." };
   }
 
-  await prisma.siteSettings.update({ where: { id: "singleton" }, data: { seoTitle, seoDescription } });
+  const translations = await translateFields({ seoTitle, seoDescription });
+  await prisma.siteSettings.update({ where: { id: "singleton" }, data: { seoTitle, seoDescription, translations } });
 
   revalidateSite();
   return { success: true };

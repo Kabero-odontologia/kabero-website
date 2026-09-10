@@ -1,3 +1,4 @@
+import { setRequestLocale } from "next-intl/server";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CenteredHero from "@/components/sections/CenteredHero";
@@ -6,7 +7,7 @@ import FAQSection from "@/components/sections/FAQSection";
 import TreatmentsCTABanner from "@/components/sections/TreatmentsCTABanner";
 import CTABand from "@/components/sections/CTABand";
 import { prisma } from "@/lib/db";
-import { getPageSection } from "@/lib/page-sections";
+import { getPageSection, localize } from "@/lib/page-sections";
 import { centeredHeroContentSchema } from "@/lib/page-sections/shared";
 import {
   tratamientosEncabezadoDefault,
@@ -14,12 +15,28 @@ import {
   tratamientosCtaBandDefault,
 } from "@/lib/page-sections/tratamientos";
 
-export default async function TratamientosPage() {
-  const [treatments, encabezado, ctaBand] = await Promise.all([
+export default async function TratamientosPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const [treatmentRows, encabezado, ctaBand] = await Promise.all([
     prisma.treatment.findMany({ where: { visible: true }, orderBy: { order: "asc" } }),
-    getPageSection("tratamientos", "centered-hero", centeredHeroContentSchema, tratamientosEncabezadoDefault),
-    getPageSection("tratamientos", "cta-band", tratamientosCtaBandContentSchema, tratamientosCtaBandDefault),
+    getPageSection(
+      "tratamientos",
+      "centered-hero",
+      centeredHeroContentSchema,
+      tratamientosEncabezadoDefault,
+      locale
+    ),
+    getPageSection(
+      "tratamientos",
+      "cta-band",
+      tratamientosCtaBandContentSchema,
+      tratamientosCtaBandDefault,
+      locale
+    ),
   ]);
+  const treatments = treatmentRows.map((t) => localize(t, t.translations, locale));
 
   return (
     <>

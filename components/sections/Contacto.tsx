@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import type { ContactoContent } from "@/lib/page-sections/home";
-import { WEEKDAY_LABELS, formatDayHours, isOpenAt, type BusinessHoursDay } from "@/lib/business-hours-shared";
+import { formatDayHours, isOpenAt, type BusinessHoursDay } from "@/lib/business-hours-shared";
 
 const SCHEDULE_CARD_WIDTH = 628;
 
@@ -29,6 +30,7 @@ function IconClock({ className = "" }: { className?: string }) {
 }
 
 function StatusBadge({ hours }: { hours: BusinessHoursDay[] }) {
+  const t = useTranslations("Contacto");
   const [open, setOpen] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -48,16 +50,17 @@ function StatusBadge({ hours }: { hours: BusinessHoursDay[] }) {
       }`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${open ? "bg-green-5" : "bg-black-6"}`} />
-      {open ? "Abierto ahora" : "Cerrado ahora"}
+      {open ? t("abiertoAhora") : t("cerradoAhora")}
     </span>
   );
 }
 
 function MapEmbed({ mapsQuery, className = "" }: { mapsQuery: string; className?: string }) {
+  const t = useTranslations("Contacto");
   const embedSrc = `https://www.google.com/maps?q=${encodeURIComponent(mapsQuery)}&z=16&output=embed`;
   return (
     <iframe
-      title="Ubicación de Kabero Odontología Estética en Google Maps"
+      title={t("ubicacionAriaLabel")}
       src={embedSrc}
       className={className}
       style={{ border: 0 }}
@@ -76,6 +79,9 @@ function ScheduleCard({
   hours: BusinessHoursDay[];
   className?: string;
 }) {
+  const t = useTranslations("Contacto");
+  const closedLabel = t("cerrado");
+
   return (
     <div className={`bg-black-11 rounded-[22px] lg:rounded-xl p-5 lg:p-8 flex flex-col gap-3 ${className}`}>
       <div className="flex items-center justify-between gap-3">
@@ -83,7 +89,7 @@ function ScheduleCard({
           <span className="w-[34px] h-[34px] shrink-0 rounded-full flex items-center justify-center">
             <IconClock className="w-6 h-6" />
           </span>
-          <span className="text-headline-md font-semibold text-black-1">Horario de atención</span>
+          <span className="text-headline-md font-semibold text-black-1">{t("horarioAtencion")}</span>
         </div>
         <StatusBadge hours={hours} />
       </div>
@@ -91,11 +97,11 @@ function ScheduleCard({
       <div className="h-px bg-black-1/20 lg:bg-black-1 w-full" />
 
       {hours.map((day) => {
-        const label = formatDayHours(day);
+        const label = formatDayHours(day, closedLabel);
         return (
           <div key={day.weekday} className="flex justify-between lg:px-4 py-2 lg:rounded-[8px] text-headline-sm">
-            <span className="text-black-1">{WEEKDAY_LABELS[day.weekday]}</span>
-            <span className={label === "Cerrado" ? "text-black-6 lg:text-black-8" : "text-black-1 font-semibold"}>
+            <span className="text-black-1">{t(`weekday.${day.weekday}`)}</span>
+            <span className={label === closedLabel ? "text-black-6 lg:text-black-8" : "text-black-1 font-semibold"}>
               {label}
             </span>
           </div>
@@ -107,7 +113,7 @@ function ScheduleCard({
       {/* Mobile: "Bioseguridad certificada" + link, stacked and left-aligned */}
       <div className="flex lg:hidden flex-col gap-3 items-start pt-1">
         <span className="flex items-center gap-2 text-[12px] text-black-1">
-          <span className="text-orange-6 text-[11px]">✓</span> Bioseguridad certificada
+          <span className="text-orange-6 text-[11px]">✓</span> {t("bioseguridad")}
         </span>
         <a
           href={mapsLink}
@@ -115,7 +121,7 @@ function ScheduleCard({
           rel="noopener noreferrer"
           className="text-[12px] font-medium text-black-1"
         >
-          Ver en Google Maps →
+          {t("verEnGoogleMaps")}
         </a>
       </div>
 
@@ -127,7 +133,7 @@ function ScheduleCard({
           rel="noopener noreferrer"
           className="text-headline-sm font-medium text-black-1"
         >
-          Ver en Google Maps →
+          {t("verEnGoogleMaps")}
         </a>
       </div>
     </div>

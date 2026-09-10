@@ -1,3 +1,4 @@
+import { setRequestLocale } from "next-intl/server";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/sections/Hero";
@@ -14,9 +15,12 @@ import { getBusinessHours } from "@/lib/business-hours";
 const FALLBACK_MAPS_QUERY = "Kabero Odontología Estética, Cochabamba, Bolivia";
 const FALLBACK_MAPS_LINK = "https://maps.app.goo.gl/6iPZDSWXkv3w5TPW9";
 
-export default async function Home() {
+export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   const [sections, siteSettings, businessHours] = await Promise.all([
-    getHomeSections(),
+    getHomeSections(locale),
     prisma.siteSettings.findUnique({ where: { id: "singleton" } }),
     getBusinessHours(),
   ]);

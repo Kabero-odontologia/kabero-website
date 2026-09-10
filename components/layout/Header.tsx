@@ -2,17 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import Button from "@/components/ui/Button";
 
-const navLinks = [
-  { label: "Home", href: "/" },
-  { label: "Tratamientos", href: "/tratamientos" },
-  { label: "Sobre nosotros", href: "/sobre-nosotros" },
-  { label: "Casos reales", href: "/casos-reales" },
-];
-
 export default function Header({ activePath = "/" }: { activePath?: string }) {
+  const t = useTranslations("Header");
+  const navLinks = [
+    { label: t("navHome"), href: "/" },
+    { label: t("navTratamientos"), href: "/tratamientos" },
+    { label: t("navSobreNosotros"), href: "/sobre-nosotros" },
+    { label: t("navCasosReales"), href: "/casos-reales" },
+  ];
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -70,16 +71,16 @@ export default function Header({ activePath = "/" }: { activePath?: string }) {
             })}
           </nav>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:flex items-center gap-4">
             <Button href="https://wa.me/59171796997" variant="primary" size="sm">
-              Agendar consulta
+              {t("agendarConsulta")}
             </Button>
           </div>
 
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-label={menuOpen ? t("cerrarMenu") : t("abrirMenu")}
             aria-expanded={menuOpen}
             className="lg:hidden relative z-[70] flex flex-col gap-1 items-center justify-center h-11 w-11 -mr-2.5 shrink-0 touch-manipulation"
           >
@@ -124,14 +125,14 @@ export default function Header({ activePath = "/" }: { activePath?: string }) {
             })}
           </nav>
 
-          <div className="p-5 border-t border-black-4 shrink-0">
+          <div className="p-5 border-t border-black-4 shrink-0 flex flex-col gap-4 items-center">
             <Button
               href="https://wa.me/59171796997"
               variant="primary"
               className="w-full"
               onClick={() => setMenuOpen(false)}
             >
-              Agendar consulta
+              {t("agendarConsulta")}
             </Button>
           </div>
         </div>

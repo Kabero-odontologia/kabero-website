@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface PaginationProps {
   page: number;
@@ -19,14 +20,15 @@ function pageList(page: number, totalPages: number): (number | "...")[] {
 }
 
 export default function Pagination({ page, totalPages, onPageChange }: PaginationProps) {
+  const t = useTranslations("Pagination");
   if (totalPages <= 1) return null;
 
   return (
-    <nav className="flex gap-2 items-center justify-center" aria-label="Paginación">
+    <nav className="flex gap-2 items-center justify-center" aria-label={t("paginacion")}>
       <button
         onClick={() => onPageChange(Math.max(1, page - 1))}
         disabled={page === 1}
-        aria-label="Página anterior"
+        aria-label={t("paginaAnterior")}
         className="w-10 h-10 rounded-full bg-black-1 border border-black-4 flex items-center justify-center disabled:opacity-40 hover:border-black-6 transition-colors"
       >
         <Image src="/icon-chevron-left.svg" alt="" width={16} height={16} />
@@ -54,7 +56,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
       <button
         onClick={() => onPageChange(Math.min(totalPages, page + 1))}
         disabled={page === totalPages}
-        aria-label="Página siguiente"
+        aria-label={t("paginaSiguiente")}
         className="w-10 h-10 rounded-full bg-black-1 border border-black-4 flex items-center justify-center disabled:opacity-40 hover:border-black-6 transition-colors"
       >
         <Image src="/icon-chevron-right.svg" alt="" width={16} height={16} />

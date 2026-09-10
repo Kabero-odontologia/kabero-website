@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import CroppedImage from "@/components/CroppedImage";
 
 interface CaseCardProps {
@@ -15,6 +16,7 @@ export default function CaseCard({
   beforePhoto = "/case-photo-before.jpg",
   afterPhoto = "/case-photo-after.jpg",
 }: CaseCardProps) {
+  const t = useTranslations("CaseCard");
   const [position, setPosition] = useState(50);
   const [dragging, setDragging] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -57,7 +59,7 @@ export default function CaseCard({
           <div className="absolute top-1/2 left-0 right-0 border-t border-dashed border-orange-6" />
           <div
             role="slider"
-            aria-label="Comparar antes y después"
+            aria-label={t("compararAntesDespues")}
             aria-valuenow={Math.round(position)}
             aria-valuemin={0}
             aria-valuemax={100}
@@ -81,14 +83,14 @@ export default function CaseCard({
         >
           <CroppedImage
             src={afterPhoto}
-            alt="Después del tratamiento"
+            alt={t("despuesAlt")}
             sizes="(max-width: 768px) 90vw, 390px"
             className="pointer-events-none"
           />
           <div className="absolute inset-0" style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}>
             <CroppedImage
               src={beforePhoto}
-              alt="Antes del tratamiento"
+              alt={t("antesAlt")}
               sizes="(max-width: 768px) 90vw, 390px"
               className="pointer-events-none"
             />
@@ -100,8 +102,8 @@ export default function CaseCard({
         </div>
 
         <div className="flex justify-between w-full text-headline-sm font-medium text-black-8">
-          <span>Antes</span>
-          <span>Después</span>
+          <span>{t("antes")}</span>
+          <span>{t("despues")}</span>
         </div>
 
         <div className="bg-black-1 border border-black-4 rounded-full px-4 py-2 flex items-center">

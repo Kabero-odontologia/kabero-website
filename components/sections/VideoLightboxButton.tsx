@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 export default function VideoLightboxButton({ videoUrl, size }: { videoUrl: string; size: number }) {
+  const t = useTranslations("VideoLightbox");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export default function VideoLightboxButton({ videoUrl, size }: { videoUrl: stri
     <>
       <button
         type="button"
-        aria-label="Reproducir video"
+        aria-label={t("reproducir")}
         onClick={() => setOpen(true)}
         className="relative shrink-0"
         style={{ width: size, height: size }}
@@ -37,11 +39,11 @@ export default function VideoLightboxButton({ videoUrl, size }: { videoUrl: stri
           <div className="relative w-full max-w-[960px]" onClick={(e) => e.stopPropagation()}>
             <button
               type="button"
-              aria-label="Cerrar video"
+              aria-label={t("cerrar")}
               onClick={() => setOpen(false)}
               className="absolute -top-10 right-0 text-white text-headline-sm"
             >
-              Cerrar ✕
+              {t("cerrarButton")}
             </button>
             <video src={videoUrl} controls autoPlay className="w-full aspect-video rounded-xl bg-black" />
           </div>

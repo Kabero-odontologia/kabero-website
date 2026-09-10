@@ -1,8 +1,15 @@
+import { getLocale, getTranslations } from "next-intl/server";
 import FAQItem from "@/components/sections/FAQItem";
 import { prisma } from "@/lib/db";
+import { localize } from "@/lib/page-sections";
 
 export default async function FAQSection() {
-  const faqs = await prisma.fAQ.findMany({ where: { visible: true }, orderBy: { order: "asc" } });
+  const [faqRows, t, locale] = await Promise.all([
+    prisma.fAQ.findMany({ where: { visible: true }, orderBy: { order: "asc" } }),
+    getTranslations("FAQSection"),
+    getLocale(),
+  ]);
+  const faqs = faqRows.map((f) => localize(f, f.translations, locale));
 
   if (faqs.length === 0) return null;
 
@@ -11,19 +18,15 @@ export default async function FAQSection() {
       <div className="bg-black-3 border border-black-4 rounded-xl p-2 flex flex-col lg:flex-row gap-3 lg:gap-5">
         <div className="bg-black-11 rounded-lg lg:rounded-xl px-4 py-5 lg:p-8 flex flex-col gap-4 lg:gap-8 w-full lg:w-[380px] shrink-0">
           <div className="flex flex-col gap-2 lg:gap-3">
-            <span className="text-title-lg font-medium text-orange-6 tracking-wide">PREGUNTAS FRECUENTES</span>
-            <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-1">
-              La claridad que necesitás antes de decidirte
-            </h2>
-            <p className="text-headline-sm text-black-8 lg:text-black-7">
-              Resolvimos las dudas más comunes antes de que tengas que preguntarlas — si la tuya no está, escribinos.
-            </p>
+            <span className="text-title-lg font-medium text-orange-6 tracking-wide">{t("eyebrow")}</span>
+            <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-1">{t("title")}</h2>
+            <p className="text-headline-sm text-black-8 lg:text-black-7">{t("subtitle")}</p>
           </div>
           <a
             href="https://wa.me/59171796997"
             className="inline-flex items-center justify-center self-start rounded-full bg-orange-6 text-black-1 hover:bg-orange-7 transition-colors px-6 py-2 text-headline-sm font-semibold lg:py-3 lg:text-headline-md lg:font-medium"
           >
-            Contactanos
+            {t("contactanos")}
           </a>
         </div>
 

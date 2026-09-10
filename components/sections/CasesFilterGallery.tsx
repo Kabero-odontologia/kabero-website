@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import CaseCard from "@/components/sections/CaseCard";
 import Pagination from "@/components/sections/Pagination";
 
@@ -20,6 +21,7 @@ interface CasesFilterGalleryProps {
 }
 
 export default function CasesFilterGallery({ cases, treatments }: CasesFilterGalleryProps) {
+  const t = useTranslations("CasesFilterGallery");
   const [activeFilter, setActiveFilter] = useState<string>("todos");
   const [page, setPage] = useState(1);
 
@@ -47,7 +49,7 @@ export default function CasesFilterGallery({ cases, treatments }: CasesFilterGal
               : "bg-black-1 text-black-8 border-black-4"
           }`}
         >
-          Todos
+          {t("todos")}
         </button>
         {treatments.map((t) => (
           <button
@@ -66,7 +68,7 @@ export default function CasesFilterGallery({ cases, treatments }: CasesFilterGal
 
       {paged.length === 0 ? (
         <p className="text-headline-sm text-black-8 py-10 text-center">
-          Todavía no hay casos cargados{activeFilter !== "todos" ? " para este tratamiento" : ""}.
+          {activeFilter !== "todos" ? t("emptyStateFiltered") : t("emptyStateAll")}
         </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">

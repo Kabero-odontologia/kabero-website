@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CTABand from "@/components/sections/CTABand";
@@ -9,6 +10,7 @@ import TreatmentHero from "@/components/sections/TreatmentHero";
 import AboutTreatment from "@/components/sections/AboutTreatment";
 import WhatWeOffer from "@/components/sections/WhatWeOffer";
 import { prisma } from "@/lib/db";
+import { localize } from "@/lib/page-sections";
 
 export async function generateStaticParams() {
   const treatments = await prisma.treatment.findMany({ select: { slug: true } });
@@ -18,20 +20,27 @@ export async function generateStaticParams() {
 export default async function TreatmentPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("TreatmentDetail");
 
-  const treatment = await prisma.treatment.findUnique({
+  const treatmentRow = await prisma.treatment.findUnique({
     where: { slug },
     include: {
       gallery: { orderBy: { order: "asc" } },
       offers: { orderBy: { order: "asc" } },
     },
   });
-  if (!treatment || !treatment.visible) notFound();
+  if (!treatmentRow || !treatmentRow.visible) notFound();
 
-  const [related, relatedCases] = await Promise.all([
+  const treatment = {
+    ...localize(treatmentRow, treatmentRow.translations, locale),
+    offers: treatmentRow.offers.map((o) => localize(o, o.translations, locale)),
+  };
+
+  const [relatedRows, relatedCases] = await Promise.all([
     prisma.treatment.findMany({
       where: { visible: true, slug: { not: slug } },
       orderBy: { order: "asc" },
@@ -43,6 +52,7 @@ export default async function TreatmentPage({
       take: 3,
     }),
   ]);
+  const related = relatedRows.map((t) => localize(t, t.translations, locale));
 
   return (
     <>
@@ -72,16 +82,18 @@ export default async function TreatmentPage({
             <section className="flex flex-col gap-4 lg:gap-6">
               <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-2 lg:gap-0">
                 <div className="flex flex-col gap-2">
-                  <span className="text-title-lg font-medium text-orange-6 tracking-wide">CASOS REALES</span>
+                  <span className="text-title-lg font-medium text-orange-6 tracking-wide">
+                    {t("casosRealesEyebrow")}
+                  </span>
                   <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">
-                    Resultados de este tratamiento
+                    {t("resultadosTitle")}
                   </h2>
                 </div>
                 <Link
                   href="/casos-reales"
                   className="text-headline-md font-medium text-black-8 hover:text-black-11 px-3 py-2 -ml-3 lg:ml-0 rounded-[8px] transition-colors self-start"
                 >
-                  Ver más casos →
+                  {t("verMasCasos")}
                 </Link>
               </div>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -93,9 +105,9 @@ export default async function TreatmentPage({
           )}
 
           <CTABand
-            headline="¿Lista para dar el siguiente paso?"
-            subtitle="Agendá tu diagnóstico y salí con un plan claro para tu tratamiento."
-            buttonLabel="Agendar por WhatsApp"
+            headline={t("ctaHeadline")}
+            subtitle={t("ctaSubtitle")}
+            buttonLabel={t("ctaButton")}
             buttonHref="https://wa.me/59171796997"
           />
 
@@ -103,16 +115,18 @@ export default async function TreatmentPage({
           <section className="flex flex-col gap-4 lg:gap-8">
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-end gap-2 lg:gap-0">
               <div className="flex flex-col gap-2">
-                <span className="text-title-lg font-medium text-orange-6 tracking-wide">MÁS TRATAMIENTOS</span>
+                <span className="text-title-lg font-medium text-orange-6 tracking-wide">
+                  {t("masTratamientosEyebrow")}
+                </span>
                 <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">
-                  Otros tratamientos relacionados
+                  {t("relacionadosTitle")}
                 </h2>
               </div>
               <Link
                 href="/tratamientos"
                 className="text-headline-md font-medium text-black-8 hover:text-black-11 px-3 py-2 -ml-3 lg:ml-0 rounded-[8px] transition-colors self-start"
               >
-                Ver todos →
+                {t("verTodos")}
               </Link>
             </div>
             <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">

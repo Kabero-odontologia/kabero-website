@@ -1,17 +1,28 @@
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import CaseCard from "@/components/sections/CaseCard";
 import { prisma } from "@/lib/db";
+import { localize } from "@/lib/page-sections";
 import type { CasosDeExitoContent } from "@/lib/page-sections/home";
 
 export default async function CasosDeExito({ content }: { content: CasosDeExitoContent }) {
-  const cases = await prisma.caseStudy.findMany({
-    where: { visible: true },
-    orderBy: { order: "asc" },
-    take: 3,
-    include: { treatment: { select: { title: true } } },
-  });
+  const [locale, t, rows] = await Promise.all([
+    getLocale(),
+    getTranslations("CasosDeExito"),
+    prisma.caseStudy.findMany({
+      where: { visible: true },
+      orderBy: { order: "asc" },
+      take: 3,
+      include: { treatment: { select: { title: true, translations: true } } },
+    }),
+  ]);
 
-  if (cases.length === 0) return null;
+  if (rows.length === 0) return null;
+
+  const cases = rows.map((c) => ({
+    ...localize(c, c.translations, locale),
+    treatment: c.treatment ? localize(c.treatment, c.treatment.translations, locale) : null,
+  }));
 
   return (
     <section className="lg:border lg:border-white/[0.08] lg:rounded-[32px] flex flex-col gap-6 lg:gap-10 items-start lg:py-0 w-full">
@@ -24,7 +35,7 @@ export default async function CasosDeExito({ content }: { content: CasosDeExitoC
           href="/casos-reales"
           className="text-headline-md font-medium text-black-8 hover:text-black-11 px-3 py-2 -ml-3 lg:ml-0 rounded-[8px] transition-colors self-start"
         >
-          Ver todos los casos →
+          {t("verTodos")}
         </Link>
       </div>
 

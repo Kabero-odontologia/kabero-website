@@ -1,0 +1,95 @@
+{
+  "Header": {
+    "navHome": "Início",
+    "navTratamientos": "Tratamentos",
+    "navSobreNosotros": "Sobre nós",
+    "navCasosReales": "Casos reais",
+    "agendarConsulta": "Agendar consulta",
+    "abrirMenu": "Abrir menu",
+    "cerrarMenu": "Fechar menu"
+  },
+  "Footer": {
+    "odontologiaEstetica": "Odontologia estética",
+    "contacto": "Contato",
+    "horario": "Seg–Sáb, ver horário",
+    "copyright": "© {year} Clínica Kabero"
+  },
+  "Hero": {
+    "contactanos": "Fale conosco",
+    "verTratamientos": "Ver tratamentos"
+  },
+  "CaseCard": {
+    "compararAntesDespues": "Comparar antes e depois",
+    "despuesAlt": "Depois do tratamento",
+    "antesAlt": "Antes do tratamento",
+    "antes": "Antes",
+    "despues": "Depois"
+  },
+  "Contacto": {
+    "abiertoAhora": "Aberto agora",
+    "cerradoAhora": "Fechado agora",
+    "cerrado": "Fechado",
+    "horarioAtencion": "Horário de atendimento",
+    "bioseguridad": "Biossegurança certificada",
+    "verEnGoogleMaps": "Ver no Google Maps →",
+    "ubicacionAriaLabel": "Localização da Kabero Odontología Estética no Google Maps",
+    "weekday": {
+      "Mon": "Segunda-feira",
+      "Tue": "Terça-feira",
+      "Wed": "Quarta-feira",
+      "Thu": "Quinta-feira",
+      "Fri": "Sexta-feira",
+      "Sat": "Sábado",
+      "Sun": "Domingo"
+    }
+  },
+  "FAQSection": {
+    "eyebrow": "PERGUNTAS FREQUENTES",
+    "title": "A clareza que você precisa antes de decidir",
+    "subtitle": "Respondemos as dúvidas mais comuns antes que você precise perguntar — se a sua não está aqui, escreva para nós.",
+    "contactanos": "Fale conosco"
+  },
+  "AboutTreatment": {
+    "title": "Sobre o tratamento"
+  },
+  "WhatWeOffer": {
+    "title": "O que este tratamento inclui"
+  },
+  "CasesFilterGallery": {
+    "todos": "Todos",
+    "emptyStateAll": "Ainda não há casos cadastrados.",
+    "emptyStateFiltered": "Ainda não há casos cadastrados para este tratamento."
+  },
+  "Pagination": {
+    "paginacion": "Paginação",
+    "paginaAnterior": "Página anterior",
+    "paginaSiguiente": "Próxima página"
+  },
+  "VideoLightbox": {
+    "reproducir": "Reproduzir vídeo",
+    "cerrar": "Fechar vídeo",
+    "cerrarButton": "Fechar ✕"
+  },
+  "TreatmentDetail": {
+    "casosRealesEyebrow": "CASOS REAIS",
+    "resultadosTitle": "Resultados deste tratamento",
+    "verMasCasos": "Ver mais casos →",
+    "ctaHeadline": "Pronta para dar o próximo passo?",
+    "ctaSubtitle": "Agende seu diagnóstico e saia com um plano claro para o seu tratamento.",
+    "ctaButton": "Agendar pelo WhatsApp",
+    "masTratamientosEyebrow": "MAIS TRATAMENTOS",
+    "relacionadosTitle": "Outros tratamentos relacionados",
+    "verTodos": "Ver todos →"
+  },
+  "Especialidades": {
+    "verTodos": "Ver todos os tratamentos"
+  },
+  "CasosDeExito": {
+    "verTodos": "Ver todos os casos →"
+  },
+  "Alt": {
+    "equipoKabero": "Equipe Kabero",
+    "recepcionClinica": "Recepção da clínica",
+    "interiorClinica": "Interior da clínica Kabero"
+  }
+}

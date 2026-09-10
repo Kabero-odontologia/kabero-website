@@ -32,6 +32,10 @@ model Treatment {
   visible   Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  // Auto-translated cache of title/shortDesc/fullDesc, e.g. {"en":{...},"pt-BR":{...}} —
+  // populated on save via lib/translate.ts, never edited directly. Spanish
+  // (the columns above) stays the single source of truth.
+  translations Json?
 
   gallery     TreatmentGalleryImage[]
   offers      TreatmentOffer[]
@@ -53,6 +57,8 @@ model TreatmentOffer {
   title       String
   desc        String
   order       Int       @default(0)
+  // See Treatment.translations.
+  translations Json?
 }
 
 // Before/after case study. If treatmentId is set, the displayed tag is the
@@ -68,6 +74,8 @@ model CaseStudy {
   order       Int        @default(0)
   visible     Boolean    @default(true)
   createdAt   DateTime   @default(now())
+  // See Treatment.translations (only covers tagOverride here).
+  translations Json?
 }
 
 model FAQ {
@@ -76,6 +84,8 @@ model FAQ {
   answer   String
   order    Int     @default(0)
   visible  Boolean @default(true)
+  // See Treatment.translations (covers question/answer).
+  translations Json?
 }
 
 model TeamMember {
@@ -85,6 +95,8 @@ model TeamMember {
   photo     String?
   order     Int     @default(0)
   visible   Boolean @default(true)
+  // See Treatment.translations (covers specialty only — name is a proper noun).
+  translations Json?
 }
 
 // One fixed row per weekday ("Mon".."Sun", matching Intl.DateTimeFormat output
@@ -108,6 +120,8 @@ model SiteSettings {
   linkedinUrl     String?
   seoTitle        String
   seoDescription  String
+  // See Treatment.translations (covers seoTitle/seoDescription only).
+  translations Json?
 }
 
 // Generic per-(page, key) content block for one-off text+image sections that
@@ -121,6 +135,9 @@ model PageSection {
   order     Int      @default(0)
   content   Json
   updatedAt DateTime @updatedAt
+  // See Treatment.translations — shaped per the flatten/unflatten adapter for
+  // this section's own content shape (lib/page-sections/translation-adapters.ts).
+  translations Json?
 
   @@unique([page, key])
 }

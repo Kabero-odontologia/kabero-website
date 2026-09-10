@@ -1,8 +1,7 @@
 "use server";
 
-import { prisma } from "@/lib/db";
 import { requireAdminSession } from "@/lib/auth";
-import { revalidatePath } from "next/cache";
+import { upsertPageSection, revalidateLocalized } from "@/lib/page-sections";
 import { centeredHeroContentSchema, ctaBandContentSchema } from "@/lib/page-sections/shared";
 
 export interface SectionFormState {
@@ -11,15 +10,11 @@ export interface SectionFormState {
 }
 
 function revalidateCasosReales() {
-  revalidatePath("/casos-reales");
+  revalidateLocalized("/casos-reales");
 }
 
 async function upsertSection(key: string, content: object, visible: boolean) {
-  await prisma.pageSection.upsert({
-    where: { page_key: { page: "casos-reales", key } },
-    update: { content, visible },
-    create: { page: "casos-reales", key, content, visible },
-  });
+  await upsertPageSection("casos-reales", key, content, visible);
 }
 
 function firstIssueMessage(error: { issues: { message: string }[] }): string {

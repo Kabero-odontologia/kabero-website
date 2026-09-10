@@ -1,7 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { prisma } from "@/lib/db";
-import type { PageSectionResult } from "@/lib/page-sections";
+import { localize, type PageSectionResult } from "@/lib/page-sections";
 import { ctaBandContentSchema, type CtaBandContent } from "./shared";
 
 const labelTuple = z.tuple([z.string().min(1), z.string().min(1)]);
@@ -187,7 +187,7 @@ export interface HomeSections {
   ctaBand: PageSectionResult<CtaBandContent>;
 }
 
-export async function getHomeSections(): Promise<HomeSections> {
+export async function getHomeSections(locale: string = "es"): Promise<HomeSections> {
   const rows = await prisma.pageSection.findMany({ where: { page: "home" } });
   const byKey = new Map(rows.map((r) => [r.key, r]));
 
@@ -195,7 +195,8 @@ export async function getHomeSections(): Promise<HomeSections> {
     const row = byKey.get(key);
     if (!row) return { content: fallback, visible: true };
     const parsed = schema.safeParse(row.content);
-    return { content: parsed.success ? parsed.data : fallback, visible: row.visible };
+    const content = parsed.success ? parsed.data : fallback;
+    return { content: localize(content, row.translations, locale), visible: row.visible };
   }
 
   return {

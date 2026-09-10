@@ -74,6 +74,7 @@ const pages: PageNavItem[] = [
 const standaloneLinks: PageSectionLink[] = [
   { label: "Footer", href: "/admin/footer" },
   { label: "Configuración del sitio", href: "/admin/horario-contacto" },
+  { label: "Usuarios", href: "/admin/usuarios" },
 ];
 
 function ChevronIcon({ open }: { open: boolean }) {

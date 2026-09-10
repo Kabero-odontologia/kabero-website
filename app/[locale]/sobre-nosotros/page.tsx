@@ -1,11 +1,12 @@
 import Image from "next/image";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import CroppedImage from "@/components/CroppedImage";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CenteredHero from "@/components/sections/CenteredHero";
 import CTABand from "@/components/sections/CTABand";
 import { prisma } from "@/lib/db";
-import { getPageSection } from "@/lib/page-sections";
+import { getPageSection, localize } from "@/lib/page-sections";
 import { centeredHeroContentSchema, ctaBandContentSchema } from "@/lib/page-sections/shared";
 import {
   sobreNosotrosEncabezadoDefault,
@@ -22,18 +23,29 @@ import {
   sobreNosotrosCtaBandDefault,
 } from "@/lib/page-sections/sobre-nosotros";
 
-export default async function SobreNosotrosPage() {
-  const [encabezado, historia, fundador, equipoIntro, laboratorio, diferenciales, ctaBand, teamMembers] =
+export default async function SobreNosotrosPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const tAlt = await getTranslations("Alt");
+
+  const [encabezado, historia, fundador, equipoIntro, laboratorio, diferenciales, ctaBand, teamMemberRows] =
     await Promise.all([
-      getPageSection("sobre-nosotros", "centered-hero", centeredHeroContentSchema, sobreNosotrosEncabezadoDefault),
-      getPageSection("sobre-nosotros", "historia", historiaContentSchema, historiaDefault),
-      getPageSection("sobre-nosotros", "fundador", fundadorContentSchema, fundadorDefault),
-      getPageSection("sobre-nosotros", "equipo-intro", equipoIntroContentSchema, equipoIntroDefault),
-      getPageSection("sobre-nosotros", "laboratorio", laboratorioContentSchema, laboratorioDefault),
-      getPageSection("sobre-nosotros", "diferenciales", diferencialesContentSchema, diferencialesDefault),
-      getPageSection("sobre-nosotros", "cta-band", ctaBandContentSchema, sobreNosotrosCtaBandDefault),
+      getPageSection(
+        "sobre-nosotros",
+        "centered-hero",
+        centeredHeroContentSchema,
+        sobreNosotrosEncabezadoDefault,
+        locale
+      ),
+      getPageSection("sobre-nosotros", "historia", historiaContentSchema, historiaDefault, locale),
+      getPageSection("sobre-nosotros", "fundador", fundadorContentSchema, fundadorDefault, locale),
+      getPageSection("sobre-nosotros", "equipo-intro", equipoIntroContentSchema, equipoIntroDefault, locale),
+      getPageSection("sobre-nosotros", "laboratorio", laboratorioContentSchema, laboratorioDefault, locale),
+      getPageSection("sobre-nosotros", "diferenciales", diferencialesContentSchema, diferencialesDefault, locale),
+      getPageSection("sobre-nosotros", "cta-band", ctaBandContentSchema, sobreNosotrosCtaBandDefault, locale),
       prisma.teamMember.findMany({ where: { visible: true }, orderBy: { order: "asc" } }),
     ]);
+  const teamMembers = teamMemberRows.map((m) => localize(m, m.translations, locale));
 
   return (
     <>
@@ -58,7 +70,7 @@ export default async function SobreNosotrosPage() {
                 <p className="text-headline-sm lg:text-headline-md text-black-8">{historia.content.description}</p>
               </div>
               <div className="order-1 lg:order-2 relative lg:flex-1 w-full h-[220px] lg:h-[420px] rounded-[20px] lg:rounded-[28px] overflow-hidden shrink-0">
-                <CroppedImage src={historia.content.photo} alt="Recepción de la clínica" sizes="(max-width: 768px) 100vw, 50vw" />
+                <CroppedImage src={historia.content.photo} alt={tAlt("recepcionClinica")} sizes="(max-width: 768px) 100vw, 50vw" />
               </div>
             </section>
           )}

@@ -1,19 +1,25 @@
 import Image from "next/image";
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import Button from "@/components/ui/Button";
 import { prisma } from "@/lib/db";
+import { localize } from "@/lib/page-sections";
 import type { EspecialidadesContent } from "@/lib/page-sections/home";
 
 export default async function Especialidades({ content }: { content: EspecialidadesContent }) {
-  const featured =
+  const [locale, t, rows] = await Promise.all([
+    getLocale(),
+    getTranslations("Especialidades"),
     content.treatmentIds.length > 0
-      ? await prisma.treatment
+      ? prisma.treatment
           .findMany({ where: { id: { in: content.treatmentIds }, visible: true } })
           .then((rows) => {
             const byId = new Map(rows.map((t) => [t.id, t]));
             return content.treatmentIds.map((id) => byId.get(id)).filter((t) => t !== undefined);
           })
-      : await prisma.treatment.findMany({ where: { visible: true }, orderBy: { order: "asc" }, take: 4 });
+      : prisma.treatment.findMany({ where: { visible: true }, orderBy: { order: "asc" }, take: 4 }),
+  ]);
+  const featured = rows.map((t) => localize(t, t.translations, locale));
 
   return (
     <section className="flex flex-col lg:flex-row gap-6 lg:gap-14 items-start">
@@ -24,7 +30,7 @@ export default async function Especialidades({ content }: { content: Especialida
         </div>
         <p className="text-headline-sm text-black-8">{content.subtitle}</p>
         <Button href="/tratamientos" variant="outline" size="sm" className="self-start">
-          Ver todo los tratamientos
+          {t("verTodos")}
         </Button>
       </div>
 
