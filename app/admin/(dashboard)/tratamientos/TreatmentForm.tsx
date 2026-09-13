@@ -2,13 +2,11 @@
 
 import { useActionState, useState } from "react";
 import Link from "next/link";
-import ImageUploadField from "@/components/admin/ImageUploadField";
 import ImageCropField from "@/components/admin/ImageCropField";
 import DynamicImageList from "@/components/admin/DynamicImageList";
 import DynamicTextPairList from "@/components/admin/DynamicTextPairList";
 import FormSection from "@/components/admin/FormSection";
 import Switch from "@/components/admin/Switch";
-import FocalPointPicker from "@/components/admin/FocalPointPicker";
 import type { TreatmentFormState } from "./actions";
 
 export interface TreatmentInitial {
@@ -20,7 +18,6 @@ export interface TreatmentInitial {
   photo: string | null;
   heroPhoto: string | null;
   teamPhoto: string | null;
-  heroFocalPosition: string | null;
   visible: boolean;
   gallery: string[];
   offers: { title: string; desc: string }[];
@@ -43,7 +40,6 @@ const emptyInitial: TreatmentInitial = {
   photo: null,
   heroPhoto: null,
   teamPhoto: null,
-  heroFocalPosition: null,
   visible: true,
   gallery: [],
   offers: [],
@@ -61,7 +57,6 @@ export default function TreatmentForm({ action, initial = emptyInitial, submitLa
     shortDesc: initial.shortDesc,
     fullDesc: initial.fullDesc,
     gradient: initial.gradient,
-    heroFocalPosition: initial.heroFocalPosition ?? "",
   });
   const [visible, setVisible] = useState(initial.visible);
 
@@ -72,6 +67,17 @@ export default function TreatmentForm({ action, initial = emptyInitial, submitLa
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[1200px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, este tratamiento desaparece del sitio."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <FormSection
           className="lg:col-span-2"
@@ -158,23 +164,22 @@ export default function TreatmentForm({ action, initial = emptyInitial, submitLa
               mobileAspect={2.18}
               clearable
             />
-            <div className="flex flex-col gap-2">
-              <ImageUploadField
-                name="heroPhoto"
-                label="FOTO DEL BANNER (si no hay, usa la principal)"
-                defaultValue={initial.heroPhoto}
-                clearable
-              />
-              <div className="flex flex-col gap-1.5">
-                <span className="text-title-md text-white/35 tracking-wide">PUNTO DE ENFOQUE (solo si el banner se ve mal recortado)</span>
-                <FocalPointPicker
-                  name="heroFocalPosition"
-                  value={values.heroFocalPosition}
-                  onChange={(v) => setValues((prev) => ({ ...prev, heroFocalPosition: v }))}
-                />
-              </div>
-            </div>
-            <ImageUploadField name="teamPhoto" label="FOTO DE EQUIPO (grilla en Sobre nosotros)" defaultValue={initial.teamPhoto} clearable />
+            <ImageCropField
+              name="heroPhoto"
+              label="FOTO DEL BANNER (si no hay, usa la principal)"
+              defaultValue={initial.heroPhoto}
+              desktopAspect={7.5}
+              mobileAspect={2.89}
+              clearable
+            />
+            <ImageCropField
+              name="teamPhoto"
+              label="FOTO DE EQUIPO (grilla en Sobre nosotros)"
+              defaultValue={initial.teamPhoto}
+              desktopAspect={1.05}
+              mobileAspect={1.16}
+              clearable
+            />
           </div>
         </FormSection>
       </div>
@@ -191,17 +196,6 @@ export default function TreatmentForm({ action, initial = emptyInitial, submitLa
           defaultValues={initial.offers}
         />
       </FormSection>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, este tratamiento desaparece del sitio."
-        />
-      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

@@ -23,6 +23,17 @@ export default function FAQForm({ action, initial, submitLabel }: FAQFormProps) 
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[640px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta pregunta desaparece del sitio."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <FormSection title="Pregunta y respuesta" description="Se muestra en la página de Tratamientos.">
         <div className="flex flex-col gap-2">
           <label htmlFor="question" className="text-title-lg font-medium text-white/60 tracking-wide">
@@ -51,17 +62,6 @@ export default function FAQForm({ action, initial, submitLabel }: FAQFormProps) 
           />
         </div>
       </FormSection>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, esta pregunta desaparece del sitio."
-        />
-      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

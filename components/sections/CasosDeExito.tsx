@@ -9,12 +9,22 @@ export default async function CasosDeExito({ content }: { content: CasosDeExitoC
   const [locale, t, rows] = await Promise.all([
     getLocale(),
     getTranslations("CasosDeExito"),
-    prisma.caseStudy.findMany({
-      where: { visible: true },
-      orderBy: { order: "asc" },
-      take: 3,
-      include: { treatment: { select: { title: true, translations: true } } },
-    }),
+    content.caseStudyIds.length > 0
+      ? prisma.caseStudy
+          .findMany({
+            where: { id: { in: content.caseStudyIds }, visible: true },
+            include: { treatment: { select: { title: true, translations: true } } },
+          })
+          .then((rows) => {
+            const byId = new Map(rows.map((c) => [c.id, c]));
+            return content.caseStudyIds.map((id) => byId.get(id)).filter((c) => c !== undefined);
+          })
+      : prisma.caseStudy.findMany({
+          where: { visible: true },
+          orderBy: { order: "asc" },
+          take: 3,
+          include: { treatment: { select: { title: true, translations: true } } },
+        }),
   ]);
 
   if (rows.length === 0) return null;

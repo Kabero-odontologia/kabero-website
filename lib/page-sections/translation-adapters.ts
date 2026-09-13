@@ -21,6 +21,7 @@ const NON_TRANSLATABLE_KEYS = new Set([
   "num",
   "badgeNumber",
   "treatmentIds",
+  "caseStudyIds",
   "value",
   "name", // Fundador's person name — a proper noun, not translated.
 ]);

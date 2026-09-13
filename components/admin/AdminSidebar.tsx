@@ -31,7 +31,7 @@ const pages: PageNavItem[] = [
       { label: "Hero", href: "/admin/paginas/home/hero" },
       { label: "Especialidades", href: "/admin/paginas/home/especialidades" },
       { label: "Casos de éxito", href: "/admin/paginas/home/casos-de-exito" },
-      { label: "Conocé nuestro equipo", href: "/admin/paginas/home/video-section" },
+      { label: "Sección multimedia de la clínica", href: "/admin/paginas/home/video-section" },
       { label: "Cómo trabajamos", href: "/admin/paginas/home/how-it-works" },
       { label: "Visitanos", href: "/admin/paginas/home/contacto" },
       { label: "Banner final", href: "/admin/paginas/home/cta-band" },

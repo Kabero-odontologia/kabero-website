@@ -30,7 +30,6 @@ function readTreatmentForm(formData: FormData) {
   const photo = String(formData.get("photo") ?? "").trim() || null;
   const heroPhoto = String(formData.get("heroPhoto") ?? "").trim() || null;
   const teamPhoto = String(formData.get("teamPhoto") ?? "").trim() || null;
-  const heroFocalPosition = String(formData.get("heroFocalPosition") ?? "").trim() || null;
   const visible = formData.get("visible") === "on";
 
   const gallery = formData
@@ -53,7 +52,6 @@ function readTreatmentForm(formData: FormData) {
     photo,
     heroPhoto,
     teamPhoto,
-    heroFocalPosition,
     visible,
     gallery,
     offers,
@@ -108,7 +106,6 @@ export async function createTreatment(
       photo: data.photo,
       heroPhoto: data.heroPhoto,
       teamPhoto: data.teamPhoto,
-      heroFocalPosition: data.heroFocalPosition,
       visible: data.visible,
       order: (maxOrder._max.order ?? -1) + 1,
       translations: treatmentTranslations,
@@ -150,7 +147,6 @@ export async function updateTreatment(
       photo: data.photo,
       heroPhoto: data.heroPhoto,
       teamPhoto: data.teamPhoto,
-      heroFocalPosition: data.heroFocalPosition,
       visible: data.visible,
       translations: treatmentTranslations,
       gallery: { deleteMany: {}, create: data.gallery.map((url, order) => ({ url, order })) },

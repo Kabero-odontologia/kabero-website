@@ -15,6 +15,9 @@ export const heroContentSchema = z.object({
   photo: z.string().min(1),
   badgeNumber: z.string().min(1),
   badgeLabel: labelTuple,
+  // .default(true) so rows saved before this field existed still parse
+  // successfully, keeping the badge showing exactly as it did before.
+  badgeVisible: z.boolean().default(true),
 });
 export type HeroContent = z.infer<typeof heroContentSchema>;
 
@@ -25,6 +28,7 @@ export const heroDefault: HeroContent = {
   photo: "/hero-team.jpg?dx=47&dy=39&mx=47&my=39",
   badgeNumber: "3",
   badgeLabel: ["especialidades", "certificadas"],
+  badgeVisible: true,
 };
 
 // --- Especialidades -------------------------------------------------------
@@ -52,16 +56,24 @@ export const especialidadesDefault: EspecialidadesContent = {
 };
 
 // --- Casos de éxito (home teaser) -----------------------------------------
+// caseStudyIds: [] is the same "no admin selection yet" sentinel used by
+// Especialidades above — the public component falls back to the first 3
+// visible case studies by `order` in that case.
 
 export const casosDeExitoContentSchema = z.object({
   eyebrow: z.string().min(1),
   title: z.string().min(1),
+  // .default([]) so rows saved before this field existed still parse
+  // successfully (falling back to the "auto" sentinel) instead of the whole
+  // row failing validation and silently reverting eyebrow/title to defaults.
+  caseStudyIds: z.array(z.string()).max(3).default([]),
 });
 export type CasosDeExitoContent = z.infer<typeof casosDeExitoContentSchema>;
 
 export const casosDeExitoDefault: CasosDeExitoContent = {
   eyebrow: "CASOS DE ÉXITO",
   title: "Casos reales de nuestros pacientes",
+  caseStudyIds: [],
 };
 
 // --- Video section ----------------------------------------------------

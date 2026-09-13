@@ -14,7 +14,7 @@ const sections = [
   },
   {
     href: "/admin/paginas/home/video-section",
-    title: "Conocé nuestro equipo",
+    title: "Sección multimedia de la clínica",
     desc: "Imagen o video, y la franja de estadísticas",
   },
   {

@@ -42,6 +42,17 @@ export default function FundadorSectionForm({ initial, visible: initialVisible }
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta sección desaparece de la página."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <FormSection className="max-w-[640px]" title="Encabezado" description="El antetítulo y el título de la sección.">
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-2">
@@ -149,17 +160,6 @@ export default function FundadorSectionForm({ initial, visible: initialVisible }
           + Agregar etiqueta
         </button>
       </FormSection>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, esta sección desaparece de la página."
-        />
-      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

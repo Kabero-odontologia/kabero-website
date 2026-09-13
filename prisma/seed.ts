@@ -57,7 +57,7 @@ const treatments = [
       "Tratamientos de conducto con tecnología de precisión para conservar la pieza dental y evitar procedimientos más invasivos.",
     gradient: "bg-gradient-to-br from-green-4 to-green-8",
     photo: "/treatments/endodoncia.jpg",
-    heroFocalPosition: "50% 24%",
+    heroPhoto: "/treatments/endodoncia.jpg?dx=50&dy=24&mx=50&my=24",
     teamPhoto: "/team/endodoncia.jpg",
     whatWeOffer: [
       { title: "Diagnóstico preciso", desc: "Evaluación clínica y radiográfica" },
@@ -74,7 +74,7 @@ const treatments = [
       "Atención pensada para las infancias, con un enfoque cercano que prioriza que cada visita sea una buena experiencia.",
     gradient: "bg-gradient-to-br from-orange-2 to-orange-5",
     photo: "/treatments/odontopediatria.jpg",
-    heroFocalPosition: "50% 29%",
+    heroPhoto: "/treatments/odontopediatria.jpg?dx=50&dy=29&mx=50&my=29",
     teamPhoto: "/team/odontopediatria.jpg",
     whatWeOffer: [
       { title: "Primera consulta amigable", desc: "Pensada para que el niño se sienta cómodo" },

@@ -12,12 +12,12 @@ interface FormSectionProps {
 // this makes the panel actually fill it instead of leaving a ragged gap).
 export default function FormSection({ title, description, className = "", children }: FormSectionProps) {
   return (
-    <section className={`flex flex-col gap-5 h-full min-w-0 bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 ${className}`}>
-      <div className="flex flex-col gap-1">
+    <section className={`flex flex-col h-full min-w-0 bg-white/[0.03] border border-white/[0.08] rounded-xl overflow-hidden ${className}`}>
+      <div className="flex flex-col gap-1 px-6 py-3.5 bg-white/[0.05] border-b border-white/[0.08]">
         <h2 className="text-headline-md font-semibold text-white">{title}</h2>
         {description && <p className="text-title-md text-white/40">{description}</p>}
       </div>
-      <div className="flex flex-col gap-5">{children}</div>
+      <div className="flex flex-col gap-5 p-6">{children}</div>
     </section>
   );
 }

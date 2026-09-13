@@ -63,7 +63,6 @@ export default async function TreatmentPage({
             title={treatment.title}
             subtitle={treatment.shortDesc}
             photo={treatment.heroPhoto ?? treatment.photo ?? ""}
-            focalPosition={treatment.heroFocalPosition ?? undefined}
           />
 
           <AboutTreatment

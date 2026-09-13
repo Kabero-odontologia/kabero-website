@@ -24,6 +24,17 @@ export default function TeamMemberForm({ action, initial, submitLabel }: TeamMem
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[900px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta persona desaparece de la grilla."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-6">
         <FormSection className="sm:col-span-3" title="Datos" description="Nombre y especialidad de esta persona.">
           <div className="flex flex-col gap-2">
@@ -63,17 +74,6 @@ export default function TeamMemberForm({ action, initial, submitLabel }: TeamMem
             mobileAspect={1.16}
           />
         </FormSection>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, esta persona desaparece de la grilla."
-        />
       </div>
 
       {state.error && (

@@ -33,6 +33,17 @@ export default function CtaBandForm({ initial, visible: initialVisible }: CtaBan
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, este banner desaparece de la página."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <FormSection title="Texto y botón" description="En mobile este mismo texto se muestra en un banner simple, sin la foto.">
           <div className="flex flex-col gap-2">
@@ -97,17 +108,6 @@ export default function CtaBandForm({ initial, visible: initialVisible }: CtaBan
         <FormSection title="Foto" description="Recorte con fondo transparente, se apoya sobre el banner.">
           <ImageUploadField name="photo" label="FOTO" defaultValue={initial.photo} />
         </FormSection>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, este banner desaparece de la página."
-        />
       </div>
 
       {state.error && (

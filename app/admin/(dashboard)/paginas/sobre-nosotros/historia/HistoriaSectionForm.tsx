@@ -33,6 +33,17 @@ export default function HistoriaSectionForm({ initial, visible: initialVisible }
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta sección desaparece de la página."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <FormSection className="lg:col-span-3" title="Contenido principal" description="El texto que aparece junto a la imagen.">
           <div className="flex flex-col gap-2">
@@ -79,17 +90,6 @@ export default function HistoriaSectionForm({ initial, visible: initialVisible }
         <FormSection className="lg:col-span-2" title="Imagen" description="Se muestra al lado del texto.">
           <ImageCropField name="photo" label="IMAGEN" defaultValue={initial.photo} desktopAspect={1.51} mobileAspect={1.59} />
         </FormSection>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, esta sección desaparece de la página."
-        />
       </div>
 
       {state.error && (

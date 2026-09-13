@@ -48,6 +48,7 @@ export async function updateHeroSection(
     photo: String(formData.get("photo") ?? ""),
     badgeNumber: String(formData.get("badgeNumber") ?? ""),
     badgeLabel: [String(formData.get("badgeLabelLine1") ?? ""), String(formData.get("badgeLabelLine2") ?? "")],
+    badgeVisible: formData.get("badgeVisible") === "on",
   });
   if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
   if (!parsed.data.photo) return { error: "Subí la foto del hero." };
@@ -85,6 +86,7 @@ export async function updateCasosDeExitoSection(
   const parsed = casosDeExitoContentSchema.safeParse({
     eyebrow: String(formData.get("eyebrow") ?? ""),
     title: String(formData.get("title") ?? ""),
+    caseStudyIds: formData.getAll("caseStudyIds").map(String),
   });
   if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
 

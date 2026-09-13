@@ -2,6 +2,24 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import DragHandleIcon from "@/components/admin/DragHandleIcon";
 
 interface TreatmentOption {
   id: string;
@@ -17,6 +35,43 @@ interface TreatmentMultiSelectProps {
   max?: number;
 }
 
+function SelectedRow({ id, treatment, onRemove }: { id: string; treatment: TreatmentOption; onRemove: () => void }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+  const style = { transform: CSS.Transform.toString(transform), transition };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center gap-3 bg-white/[0.05] border border-white/[0.10] rounded-md px-3 py-2 ${
+        isDragging ? "opacity-60 z-10 relative" : ""
+      }`}
+    >
+      <button
+        type="button"
+        {...attributes}
+        {...listeners}
+        className="w-7 h-7 rounded flex items-center justify-center text-white/35 hover:bg-white/[0.08] hover:text-white/70 cursor-grab active:cursor-grabbing transition-colors touch-none shrink-0"
+        aria-label="Arrastrar para reordenar"
+      >
+        <DragHandleIcon />
+      </button>
+      <div className="relative w-9 h-9 rounded shrink-0 overflow-hidden bg-white/[0.06]">
+        {treatment.photo && <Image src={treatment.photo} alt="" fill sizes="36px" className="object-cover" />}
+      </div>
+      <span className="flex-1 text-headline-sm text-white truncate">{treatment.title}</span>
+      <button
+        type="button"
+        onClick={onRemove}
+        className="w-7 h-7 rounded flex items-center justify-center text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-colors shrink-0"
+        aria-label="Quitar"
+      >
+        ✕
+      </button>
+    </div>
+  );
+}
+
 export default function TreatmentMultiSelect({
   name,
   treatments,
@@ -27,75 +82,47 @@ export default function TreatmentMultiSelect({
   const [selected, setSelected] = useState<string[]>(defaultSelectedIds);
   const byId = new Map(treatments.map((t) => [t.id, t]));
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
   function toggle(id: string) {
     setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : prev.length < max ? [...prev, id] : prev));
   }
 
-  function move(id: string, direction: "up" | "down") {
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
     setSelected((prev) => {
-      const i = prev.indexOf(id);
-      const j = direction === "up" ? i - 1 : i + 1;
-      if (j < 0 || j >= prev.length) return prev;
-      const next = [...prev];
-      [next[i], next[j]] = [next[j], next[i]];
-      return next;
+      const oldIndex = prev.indexOf(active.id as string);
+      const newIndex = prev.indexOf(over.id as string);
+      return arrayMove(prev, oldIndex, newIndex);
     });
   }
 
   return (
     <div className="flex flex-col gap-4">
-      {selected.map((id) => id).map((id) => (
+      {selected.map((id) => (
         <input key={id} type="hidden" name={name} value={id} />
       ))}
 
       {selected.length > 0 && (
         <div className="flex flex-col gap-2">
           <span className="text-title-md font-medium text-white/40 tracking-wide">
-            ELEGIDAS (en este orden)
+            ELEGIDAS — arrastrá para reordenar
           </span>
-          <div className="flex flex-col gap-2">
-            {selected.map((id, i) => {
-              const t = byId.get(id);
-              if (!t) return null;
-              return (
-                <div
-                  key={id}
-                  className="flex items-center gap-3 bg-white/[0.05] border border-white/[0.10] rounded-md px-3 py-2"
-                >
-                  <div className="relative w-9 h-9 rounded shrink-0 overflow-hidden bg-white/[0.06]">
-                    {t.photo && <Image src={t.photo} alt="" fill sizes="36px" className="object-cover" />}
-                  </div>
-                  <span className="flex-1 text-headline-sm text-white">{t.title}</span>
-                  <button
-                    type="button"
-                    disabled={i === 0}
-                    onClick={() => move(id, "up")}
-                    className="w-7 h-7 rounded flex items-center justify-center text-white/50 hover:bg-white/[0.08] hover:text-white disabled:opacity-25 transition-colors"
-                    aria-label="Mover arriba"
-                  >
-                    ↑
-                  </button>
-                  <button
-                    type="button"
-                    disabled={i === selected.length - 1}
-                    onClick={() => move(id, "down")}
-                    className="w-7 h-7 rounded flex items-center justify-center text-white/50 hover:bg-white/[0.08] hover:text-white disabled:opacity-25 transition-colors"
-                    aria-label="Mover abajo"
-                  >
-                    ↓
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => toggle(id)}
-                    className="w-7 h-7 rounded flex items-center justify-center text-red-400/70 hover:bg-red-500/10 hover:text-red-400 transition-colors"
-                    aria-label="Quitar"
-                  >
-                    ✕
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={selected} strategy={verticalListSortingStrategy}>
+              <div className="flex flex-col gap-2">
+                {selected.map((id) => {
+                  const t = byId.get(id);
+                  if (!t) return null;
+                  return <SelectedRow key={id} id={id} treatment={t} onRemove={() => toggle(id)} />;
+                })}
+              </div>
+            </SortableContext>
+          </DndContext>
         </div>
       )}
 

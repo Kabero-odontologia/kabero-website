@@ -33,6 +33,17 @@ export default function CaseStudyForm({ action, treatments, initial, submitLabel
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, este caso desaparece del sitio."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <FormSection title="Detalles" description="Qué tratamiento representa este caso.">
           <div className="flex flex-col gap-2">
@@ -90,17 +101,6 @@ export default function CaseStudyForm({ action, treatments, initial, submitLabel
             />
           </div>
         </FormSection>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, este caso desaparece del sitio."
-        />
       </div>
 
       {state.error && (

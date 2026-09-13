@@ -24,7 +24,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     photo: treatment.photo,
     heroPhoto: treatment.heroPhoto,
     teamPhoto: treatment.teamPhoto,
-    heroFocalPosition: treatment.heroFocalPosition,
     visible: treatment.visible,
     gallery: treatment.gallery.map((g) => g.url),
     offers: treatment.offers.map((o) => ({ title: o.title, desc: o.desc })),

@@ -14,7 +14,18 @@ export default function VideoLightboxButton({ videoUrl, size }: { videoUrl: stri
       if (e.key === "Escape") setOpen(false);
     }
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    // Locking `body` alone still lets a little scroll leak through — `html`
+    // needs to be locked in the same tick too.
+    const html = document.documentElement;
+    const prevHtmlOverflow = html.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      html.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
   }, [open]);
 
   return (

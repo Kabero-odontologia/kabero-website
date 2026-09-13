@@ -28,6 +28,7 @@ export default function HeroSectionForm({ initial, visible: initialVisible }: He
     badgeLabelLine2: initial.badgeLabel[1],
   });
   const [visible, setVisible] = useState(initialVisible);
+  const [badgeVisible, setBadgeVisible] = useState(initial.badgeVisible);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     const { name, value } = e.target;
@@ -36,6 +37,17 @@ export default function HeroSectionForm({ initial, visible: initialVisible }: He
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, el Hero desaparece del Home."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <FormSection
           className="lg:col-span-3"
@@ -83,7 +95,10 @@ export default function HeroSectionForm({ initial, visible: initialVisible }: He
           </div>
 
           <div className="flex flex-col gap-2">
-            <span className="text-title-lg font-medium text-white/60 tracking-wide">TARJETA (ej. &quot;3&quot;)</span>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-title-lg font-medium text-white/60 tracking-wide">TARJETA (ej. &quot;3&quot;)</span>
+              <Switch name="badgeVisible" checked={badgeVisible} onChange={setBadgeVisible} label="Mostrar" />
+            </div>
             <div className="grid grid-cols-3 gap-3">
               <input
                 name="badgeNumber"
@@ -113,17 +128,6 @@ export default function HeroSectionForm({ initial, visible: initialVisible }: He
         <FormSection className="lg:col-span-2" title="Imagen" description="La foto principal del Hero.">
           <ImageCropField name="photo" label="IMAGEN" defaultValue={initial.photo} desktopAspect={1.45} mobileAspect={1.6} />
         </FormSection>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, el Hero desaparece del Home."
-        />
       </div>
 
       {state.error && (

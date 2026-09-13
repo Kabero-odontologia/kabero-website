@@ -46,6 +46,17 @@ export default function VideoSectionForm({ initial, visible: initialVisible }: V
 
   return (
     <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
+      <div className="flex flex-col gap-4">
+        <Switch
+          name="visible"
+          checked={visible}
+          onChange={setVisible}
+          label="Visible en el sitio público"
+          description="Si lo apagás, esta sección desaparece del Home."
+        />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         <FormSection
           className="lg:col-span-2"
@@ -180,17 +191,6 @@ export default function VideoSectionForm({ initial, visible: initialVisible }: V
           </fieldset>
         </div>
       </FormSection>
-
-      <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
-        <Switch
-          name="visible"
-          checked={visible}
-          onChange={setVisible}
-          label="Visible en el sitio público"
-          description="Si lo apagás, esta sección desaparece del Home."
-        />
-      </div>
 
       {state.error && (
         <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">

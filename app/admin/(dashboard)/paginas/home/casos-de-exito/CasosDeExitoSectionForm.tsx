@@ -5,6 +5,7 @@ import Link from "next/link";
 import SavedToast from "@/components/admin/SavedToast";
 import FormSection from "@/components/admin/FormSection";
 import Switch from "@/components/admin/Switch";
+import CaseStudyMultiSelect from "@/components/admin/CaseStudyMultiSelect";
 import { updateCasosDeExitoSection, type SectionFormState } from "../actions";
 import type { CasosDeExitoContent } from "@/lib/page-sections/home";
 
@@ -13,9 +14,18 @@ const initialState: SectionFormState = {};
 interface CasosDeExitoSectionFormProps {
   initial: CasosDeExitoContent;
   visible: boolean;
+  caseStudies: { id: string; photo: string; tag: string; treatmentId: string | null }[];
+  treatments: { id: string; title: string }[];
+  defaultSelectedIds: string[];
 }
 
-export default function CasosDeExitoSectionForm({ initial, visible: initialVisible }: CasosDeExitoSectionFormProps) {
+export default function CasosDeExitoSectionForm({
+  initial,
+  visible: initialVisible,
+  caseStudies,
+  treatments,
+  defaultSelectedIds,
+}: CasosDeExitoSectionFormProps) {
   const [state, formAction, pending] = useActionState(updateCasosDeExitoSection, initialState);
 
   const [values, setValues] = useState({ eyebrow: initial.eyebrow, title: initial.title });
@@ -27,47 +37,8 @@ export default function CasosDeExitoSectionForm({ initial, visible: initialVisib
   }
 
   return (
-    <form action={formAction} className="flex flex-col gap-6 max-w-[640px]">
-      <FormSection
-        title="Contenido principal"
-        description="Las fotos que se muestran acá son las primeras 3 visibles de Casos reales — para cambiar cuáles aparecen, reordená o mostrá/ocultá casos ahí."
-      >
-        <div className="flex flex-col gap-2">
-          <label htmlFor="eyebrow" className="text-title-lg font-medium text-white/60 tracking-wide">
-            ANTETÍTULO
-          </label>
-          <input
-            id="eyebrow"
-            name="eyebrow"
-            value={values.eyebrow}
-            onChange={handleChange}
-            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-          />
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="title" className="text-title-lg font-medium text-white/60 tracking-wide">
-            TÍTULO
-          </label>
-          <input
-            id="title"
-            name="title"
-            value={values.title}
-            onChange={handleChange}
-            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
-          />
-        </div>
-
-        <Link
-          href="/admin/casos-reales"
-          className="text-title-md text-white/50 underline hover:text-white/80 transition-colors w-fit"
-        >
-          Ir a Casos reales →
-        </Link>
-      </FormSection>
-
+    <form action={formAction} className="flex flex-col gap-6 max-w-[1080px]">
       <div className="flex flex-col gap-4">
-        <div className="h-px bg-white/[0.08]" />
         <Switch
           name="visible"
           checked={visible}
@@ -75,6 +46,62 @@ export default function CasosDeExitoSectionForm({ initial, visible: initialVisib
           label="Visible en el sitio público"
           description="Si lo apagás, esta sección desaparece del Home."
         />
+        <div className="h-px bg-white/[0.08]" />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <FormSection
+          className="lg:col-span-2"
+          title="Contenido principal"
+          description="El texto que aparece antes de la grilla de casos."
+        >
+          <div className="flex flex-col gap-2">
+            <label htmlFor="eyebrow" className="text-title-lg font-medium text-white/60 tracking-wide">
+              ANTETÍTULO
+            </label>
+            <input
+              id="eyebrow"
+              name="eyebrow"
+              value={values.eyebrow}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="title" className="text-title-lg font-medium text-white/60 tracking-wide">
+              TÍTULO
+            </label>
+            <input
+              id="title"
+              name="title"
+              value={values.title}
+              onChange={handleChange}
+              className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white outline-none focus:border-white/30 transition-colors"
+            />
+          </div>
+
+          <Link
+            href="/admin/casos-reales"
+            className="text-title-md text-white/50 underline hover:text-white/80 transition-colors w-fit"
+          >
+            Ir a Casos reales →
+          </Link>
+        </FormSection>
+
+        <FormSection
+          className="lg:col-span-3"
+          title="Casos destacados"
+          description="Elegí hasta 3 — se muestran en el orden en que las marques."
+        >
+          <CaseStudyMultiSelect
+            name="caseStudyIds"
+            caseStudies={caseStudies}
+            treatments={treatments}
+            defaultSelectedIds={defaultSelectedIds}
+            max={3}
+          />
+        </FormSection>
       </div>
 
       {state.error && (

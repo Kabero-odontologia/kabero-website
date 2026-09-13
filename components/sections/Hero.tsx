@@ -41,9 +41,11 @@ export default function Hero({ content }: { content: HeroContent }) {
             <div className="absolute inset-0 rounded-[20px] border border-black-8 bg-black-10 overflow-hidden">
               <TeamPhoto photo={content.photo} className="absolute inset-0" />
             </div>
-            <div className="absolute left-1 -bottom-4">
-              <Badge number={content.badgeNumber} label={content.badgeLabel} />
-            </div>
+            {content.badgeVisible && (
+              <div className="absolute left-1 -bottom-4">
+                <Badge number={content.badgeNumber} label={content.badgeLabel} />
+              </div>
+            )}
           </div>
 
           <p className="text-headline-sm text-black-8">{content.subtitle}</p>
@@ -80,9 +82,11 @@ export default function Hero({ content }: { content: HeroContent }) {
             <div className="absolute inset-0 rounded-[28px] border border-black-8 bg-black-10 overflow-hidden">
               <TeamPhoto photo={content.photo} className="absolute inset-0" />
             </div>
-            <div className="absolute -bottom-4 left-6">
-              <Badge number={content.badgeNumber} label={content.badgeLabel} />
-            </div>
+            {content.badgeVisible && (
+              <div className="absolute -bottom-4 left-6">
+                <Badge number={content.badgeNumber} label={content.badgeLabel} />
+              </div>
+            )}
           </div>
         </div>
       </div>

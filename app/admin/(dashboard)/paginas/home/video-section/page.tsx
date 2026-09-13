@@ -12,7 +12,7 @@ export default async function Page() {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-display-sm font-bold text-white">Conocé nuestro equipo (video)</h1>
+      <h1 className="text-display-sm font-bold text-white">Sección multimedia de la clínica</h1>
       <VideoSectionForm initial={content} visible={visible} />
     </div>
   );
