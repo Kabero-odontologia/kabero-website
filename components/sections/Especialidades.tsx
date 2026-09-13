@@ -45,7 +45,7 @@ export default async function Especialidades({ content }: { content: Especialida
               <Image src="/icon-dentist.svg" alt="" width={20} height={20} className="w-5 h-5 lg:w-6 lg:h-6" />
             </span>
             <span className="text-headline-md font-semibold text-black-11">{t.title}</span>
-            <span className="text-headline-sm text-black-8">{t.shortDesc}</span>
+            {t.shortDesc && <span className="text-headline-sm text-black-8">{t.shortDesc}</span>}
           </Link>
         ))}
       </div>

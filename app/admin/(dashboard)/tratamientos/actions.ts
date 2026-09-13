@@ -71,8 +71,8 @@ async function translateTreatment(data: ReturnType<typeof readTreatmentForm>) {
 }
 
 function validateTreatmentForm(data: ReturnType<typeof readTreatmentForm>): string | null {
-  if (!data.title || !data.slug || !data.shortDesc || !data.fullDesc || !data.gradient) {
-    return "Completá título, slug, descripción corta, descripción completa y degradé.";
+  if (!data.title || !data.slug || !data.fullDesc || !data.gradient) {
+    return "Completá título, slug, descripción completa y degradé.";
   }
   if (!SLUG_PATTERN.test(data.slug)) {
     return "El slug solo puede tener minúsculas, números y guiones (ej. mi-tratamiento).";

@@ -16,9 +16,9 @@ export default function TreatmentHero({ title, subtitle, photo }: TreatmentHeroP
         Tratamientos&nbsp;&nbsp;/&nbsp;&nbsp;{title}
       </span>
       <h1 className="relative text-display-sm lg:text-display-lg font-bold text-black-11">{title}</h1>
-      <p className="relative text-headline-sm lg:text-headline-md text-black-11 lg:text-black-8 max-w-[560px]">
-        {subtitle}
-      </p>
+      {subtitle && (
+        <p className="relative text-headline-sm lg:text-headline-md text-black-11 max-w-[560px]">{subtitle}</p>
+      )}
     </section>
   );
 }

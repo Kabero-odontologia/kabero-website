@@ -26,7 +26,7 @@ export default function TreatmentCard({ slug, title, desc, photo, gradient }: Tr
       </div>
       <div className="px-5 lg:px-6 pt-6 pb-6 lg:pb-8 flex flex-col gap-2 lg:gap-3">
         <span className="text-headline-md font-semibold text-black-11">{title}</span>
-        <span className="text-headline-sm text-black-7">{desc}</span>
+        {desc && <span className="text-headline-sm text-black-7">{desc}</span>}
       </div>
     </Link>
   );
