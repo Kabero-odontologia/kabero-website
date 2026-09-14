@@ -17,6 +17,11 @@ export async function generateStaticParams() {
   return treatments.map((t) => ({ slug: t.slug }));
 }
 
+// Self-heals within an hour even if a `revalidatePath` call is ever missed or
+// (as happened on the very first deploy) the build ran against an empty
+// database because the persistent disk isn't mounted during the build step.
+export const revalidate = 3600;
+
 export default async function TreatmentPage({
   params,
 }: {

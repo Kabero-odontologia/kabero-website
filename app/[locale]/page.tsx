@@ -15,6 +15,11 @@ import { getBusinessHours } from "@/lib/business-hours";
 const FALLBACK_MAPS_QUERY = "Kabero Odontología Estética, Cochabamba, Bolivia";
 const FALLBACK_MAPS_LINK = "https://maps.app.goo.gl/6iPZDSWXkv3w5TPW9";
 
+// Self-heals within an hour even if a `revalidatePath` call is ever missed or
+// (as happened on the very first deploy) the build ran against an empty
+// database because the persistent disk isn't mounted during the build step.
+export const revalidate = 3600;
+
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
