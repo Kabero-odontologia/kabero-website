@@ -24,6 +24,7 @@ export async function generateMetadata({
   const row = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
   const settings = row ? localize(row, row.translations, locale) : null;
   return {
+    metadataBase: new URL("https://kabero.org"),
     title: settings?.seoTitle || FALLBACK_TITLE,
     description: settings?.seoDescription || FALLBACK_DESCRIPTION,
   };
