@@ -9,7 +9,11 @@ import { requireAdminSession } from "@/lib/auth";
 // on the *next* admin edit, so freshly-restored content otherwise sits
 // behind stale static HTML until something is manually re-saved.
 export async function POST() {
-  await requireAdminSession();
+  try {
+    await requireAdminSession();
+  } catch {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
   revalidatePath("/", "layout");
   return NextResponse.json({ revalidated: true });
 }
