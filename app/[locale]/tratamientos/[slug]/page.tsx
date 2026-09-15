@@ -74,7 +74,6 @@ export default async function TreatmentPage({
             title={treatment.title}
             fullDesc={treatment.fullDesc}
             gallery={treatment.gallery.map((g) => g.url)}
-            gradient={treatment.gradient}
           />
         </div>
 

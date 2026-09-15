@@ -5,10 +5,26 @@ interface AboutTreatmentProps {
   title: string;
   fullDesc: string;
   gallery?: string[];
-  gradient: string;
 }
 
-export default function AboutTreatment({ title, fullDesc, gallery, gradient }: AboutTreatmentProps) {
+// Shown instead of a raw empty block while the gallery photos haven't been
+// uploaded yet in the admin — a subtle branded placeholder rather than
+// looking like missing content.
+function GalleryPlaceholder({ className }: { className: string }) {
+  return (
+    <div className={`bg-gradient-to-br from-black-3 to-black-5 flex items-center justify-center ${className}`}>
+      <Image
+        src="/icon-dentist.svg"
+        alt=""
+        width={32}
+        height={32}
+        className="w-8 h-8 lg:w-10 lg:h-10 opacity-25 brightness-0 invert"
+      />
+    </div>
+  );
+}
+
+export default function AboutTreatment({ title, fullDesc, gallery }: AboutTreatmentProps) {
   const t = useTranslations("AboutTreatment");
   const hasGallery = gallery && gallery.length >= 5;
 
@@ -58,10 +74,10 @@ export default function AboutTreatment({ title, fullDesc, gallery, gradient }: A
         </>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 w-full">
-          <div className={`lg:col-span-2 h-[220px] lg:h-[320px] rounded-[16px] lg:rounded-[20px] ${gradient}`} />
+          <GalleryPlaceholder className="lg:col-span-2 h-[220px] lg:h-[320px] rounded-[16px] lg:rounded-[20px]" />
           <div className="grid grid-cols-2 lg:grid-cols-1 lg:grid-rows-2 gap-3 lg:gap-4">
-            <div className="h-[160px] lg:h-full rounded-[16px] lg:rounded-[20px] bg-gradient-to-br from-black-3 to-black-6" />
-            <div className="h-[160px] lg:h-full rounded-[16px] lg:rounded-[20px] bg-gradient-to-br from-black-3 to-black-6" />
+            <GalleryPlaceholder className="h-[160px] lg:h-full rounded-[16px] lg:rounded-[20px]" />
+            <GalleryPlaceholder className="h-[160px] lg:h-full rounded-[16px] lg:rounded-[20px]" />
           </div>
         </div>
       )}
