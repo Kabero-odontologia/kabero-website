@@ -1,4 +1,4 @@
-import ImageUploadField from "@/components/admin/ImageUploadField";
+import ImageCropField from "@/components/admin/ImageCropField";
 
 export interface RepeatableStepItem {
   num: string;
@@ -21,7 +21,7 @@ interface RepeatableItemListProps {
 // `formData.get("x")` convention in every other admin form. Title/desc/alt are
 // controlled (value+onChange) so a failed or successful submit doesn't wipe them
 // via React 19's automatic form.reset(); the image field manages its own safe
-// internal state via ImageUploadField.
+// internal state via ImageCropField.
 export default function RepeatableItemList({ items, namePrefix, onFieldChange }: RepeatableItemListProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -34,7 +34,13 @@ export default function RepeatableItemList({ items, namePrefix, onFieldChange }:
             PASO {item.num}
           </legend>
 
-          <ImageUploadField name={namePrefix(i, "photo")} label="IMAGEN" defaultValue={item.photo} />
+          <ImageCropField
+            name={namePrefix(i, "photo")}
+            label="IMAGEN"
+            defaultValue={item.photo}
+            desktopAspect={1.5}
+            mobileAspect={1.73}
+          />
 
           <div className="flex flex-col gap-1.5">
             <label className="text-title-md text-white/35 tracking-wide">TÍTULO</label>

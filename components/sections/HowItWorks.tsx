@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
+import CroppedImage from "@/components/CroppedImage";
 import type { HowItWorksContent } from "@/lib/page-sections/home";
 
 export default function HowItWorks({ content }: { content: HowItWorksContent }) {
@@ -54,14 +54,14 @@ export default function HowItWorks({ content }: { content: HowItWorksContent }) 
 
           <div className="lg:hidden relative w-full h-[220px] rounded-[20px] border border-black-4 bg-black-3 overflow-hidden">
             <div key={active.num} className="absolute inset-0 animate-[fade-in_0.4s_ease]">
-              <Image src={active.photo} alt={active.alt} fill sizes="100vw" className="object-cover" />
+              <CroppedImage src={active.photo} alt={active.alt} sizes="100vw" />
             </div>
           </div>
         </div>
 
         <div className="hidden lg:block relative flex-1 w-full h-[448px] rounded-xl border border-black-4 bg-black-3 overflow-hidden">
           <div key={active.num} className="absolute inset-0 animate-[fade-in_0.4s_ease]">
-            <Image src={active.photo} alt={active.alt} fill sizes="45vw" className="object-cover" />
+            <CroppedImage src={active.photo} alt={active.alt} sizes="45vw" />
           </div>
         </div>
       </div>
