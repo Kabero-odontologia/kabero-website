@@ -5,9 +5,12 @@
 # container start (before `next start`) to:
 #   1. Move the SQLite database onto the persistent disk so it survives
 #      restarts/redeploys, then apply any pending migrations.
-#   2. Redirect new admin uploads onto the persistent disk too, seeding it
-#      from the repo's checked-in photos on the very first boot only (so a
-#      later redeploy never overwrites uploads added after that).
+#   2. Seed the persistent disk with the repo's checked-in photos on the very
+#      first boot only (so a later redeploy never overwrites uploads added
+#      after that). Uploaded files are served by app/uploads/[filename]/
+#      instead of Next's `public/` static serving — that only picks up
+#      whatever existed at build time, so a real admin upload (added while
+#      the server is already running) would otherwise 404 forever.
 #   3. Kick every statically-generated public page into regenerating itself
 #      once the server is actually up — `next build` ran against an empty
 #      database (the disk isn't mounted during the build step), so without
@@ -21,8 +24,6 @@ mkdir -p "$DISK_PATH/uploads"
 if [ -z "$(ls -A "$DISK_PATH/uploads" 2>/dev/null)" ]; then
   cp -a public/uploads/. "$DISK_PATH/uploads/"
 fi
-rm -rf public/uploads
-ln -s "$DISK_PATH/uploads" public/uploads
 
 npx prisma migrate deploy
 

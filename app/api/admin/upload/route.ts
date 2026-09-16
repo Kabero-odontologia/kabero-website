@@ -4,6 +4,7 @@ import { writeFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { requireAdminSession } from "@/lib/auth";
+import { uploadsDir } from "@/lib/uploads";
 
 const ALLOWED_IMAGE_TYPES: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -48,10 +49,10 @@ export async function POST(request: NextRequest) {
   }
 
   const filename = `${randomUUID()}.${ext}`;
-  const uploadsDir = path.join(process.cwd(), "public", "uploads");
-  await mkdir(uploadsDir, { recursive: true });
+  const dir = uploadsDir();
+  await mkdir(dir, { recursive: true });
   const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(uploadsDir, filename), buffer);
+  await writeFile(path.join(dir, filename), buffer);
 
   return NextResponse.json({ url: `/uploads/${filename}` });
 }
