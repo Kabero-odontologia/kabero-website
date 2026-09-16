@@ -34,10 +34,14 @@ export default function VideoSection({ content }: { content: VideoSectionContent
                 <div className="h-px bg-black-1/20 w-full" />
               </div>
             ))}
-            <div className="flex items-center gap-3 text-black-3">
-              <span className="text-headline-md font-bold shrink-0">{content.locationLine1}</span>
-              <span className="text-title-lg">{content.locationLine2}</span>
-            </div>
+            {(content.locationLine1 || content.locationLine2) && (
+              <div className="flex items-center gap-3 text-black-3">
+                {content.locationLine1 && (
+                  <span className="text-headline-md font-bold shrink-0">{content.locationLine1}</span>
+                )}
+                {content.locationLine2 && <span className="text-title-lg">{content.locationLine2}</span>}
+              </div>
+            )}
           </div>
         </div>
 
@@ -49,7 +53,9 @@ export default function VideoSection({ content }: { content: VideoSectionContent
 
             <div className="relative h-full flex flex-col items-center justify-center gap-5 px-6 text-center">
               <div className="flex flex-col items-center gap-2">
-                <span className="text-headline-sm font-medium text-black-6">{content.eyebrowDesktop}</span>
+                {content.eyebrowDesktop && (
+                  <span className="text-headline-sm font-medium text-black-6">{content.eyebrowDesktop}</span>
+                )}
                 <h2 className="text-display-sm font-bold text-black-1 [text-shadow:0px_4px_14px_rgba(0,0,0,0.25)]">
                   {content.heading}
                 </h2>
@@ -73,13 +79,19 @@ export default function VideoSection({ content }: { content: VideoSectionContent
                   </div>
                 </div>
               ))}
-              <div className="flex items-center gap-0 w-auto flex-1">
-                <div className="block w-px h-10 bg-black-1/20 mr-8" />
-                <div className="flex flex-col items-start w-full">
-                  <span className="text-headline-lg font-bold text-black-1">{content.locationLine1}</span>
-                  <span className="text-headline-sm font-medium text-black-1">{content.locationLine2}</span>
+              {(content.locationLine1 || content.locationLine2) && (
+                <div className="flex items-center gap-0 w-auto flex-1">
+                  <div className="block w-px h-10 bg-black-1/20 mr-8" />
+                  <div className="flex flex-col items-start w-full">
+                    {content.locationLine1 && (
+                      <span className="text-headline-lg font-bold text-black-1">{content.locationLine1}</span>
+                    )}
+                    {content.locationLine2 && (
+                      <span className="text-headline-sm font-medium text-black-1">{content.locationLine2}</span>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>

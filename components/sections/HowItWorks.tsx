@@ -14,7 +14,9 @@ export default function HowItWorks({ content }: { content: HowItWorksContent }) 
       <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-6 lg:gap-14 items-start px-5 lg:px-14 py-6 lg:py-14">
         <div className="flex flex-col gap-6 lg:gap-8 items-start w-full lg:w-[600px] shrink-0">
           <div className="flex flex-col gap-2 items-start">
-            <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+            {content.eyebrow && (
+              <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+            )}
             <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">{content.title}</h2>
           </div>
 
@@ -43,7 +45,7 @@ export default function HowItWorks({ content }: { content: HowItWorksContent }) 
                   </span>
                   <div className="flex flex-col gap-1 items-start">
                     <span className="text-headline-md font-semibold text-black-11">{s.title}</span>
-                    <span className="text-headline-sm text-black-8">{s.desc}</span>
+                    {s.desc && <span className="text-headline-sm text-black-8">{s.desc}</span>}
                   </div>
                 </button>
               );

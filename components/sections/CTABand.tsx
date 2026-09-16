@@ -41,9 +41,11 @@ export default function CTABand({
       <h2 className="relative text-display-sm lg:text-display-md font-bold text-black-1 whitespace-pre-line">
         {headline}
       </h2>
-      <p className="relative text-headline-sm lg:text-headline-md text-black-6 lg:text-black-8 max-w-[520px]">
-        {subtitle}
-      </p>
+      {subtitle && (
+        <p className="relative text-headline-sm lg:text-headline-md text-black-6 lg:text-black-8 max-w-[520px]">
+          {subtitle}
+        </p>
+      )}
       <Button href={buttonHref} variant="primary" size="sm" className="relative">
         {buttonLabel}
       </Button>

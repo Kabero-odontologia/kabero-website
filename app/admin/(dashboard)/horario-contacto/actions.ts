@@ -72,10 +72,6 @@ export async function updateSeo(
   const seoTitle = String(formData.get("seoTitle") ?? "").trim();
   const seoDescription = String(formData.get("seoDescription") ?? "").trim();
 
-  if (!seoTitle || !seoDescription) {
-    return { error: "Completá el título y la descripción para buscadores." };
-  }
-
   const translations = await translateFields({ seoTitle, seoDescription });
   await prisma.siteSettings.update({ where: { id: "singleton" }, data: { seoTitle, seoDescription, translations } });
 

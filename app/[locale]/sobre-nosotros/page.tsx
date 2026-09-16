@@ -69,10 +69,16 @@ export default async function SobreNosotrosPage({ params }: { params: Promise<{ 
             <section className="flex flex-col lg:flex-row gap-5 lg:gap-14 items-center">
               <div className="order-2 lg:order-1 lg:flex-1 flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                  <span className="text-title-lg font-medium text-orange-6 tracking-wide">{historia.content.eyebrow}</span>
+                  {historia.content.eyebrow && (
+                    <span className="text-title-lg font-medium text-orange-6 tracking-wide">
+                      {historia.content.eyebrow}
+                    </span>
+                  )}
                   <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">{historia.content.title}</h2>
                 </div>
-                <p className="text-headline-sm lg:text-headline-md text-black-8">{historia.content.description}</p>
+                {historia.content.description && (
+                  <p className="text-headline-sm lg:text-headline-md text-black-8">{historia.content.description}</p>
+                )}
               </div>
               <div className="order-1 lg:order-2 relative lg:flex-1 w-full h-[220px] lg:h-[420px] rounded-[20px] lg:rounded-[28px] overflow-hidden shrink-0">
                 <CroppedImage src={historia.content.photo} alt={tAlt("recepcionClinica")} sizes="(max-width: 768px) 100vw, 50vw" />
@@ -83,7 +89,11 @@ export default async function SobreNosotrosPage({ params }: { params: Promise<{ 
           {fundador.visible && (
             <section className="flex flex-col gap-4 lg:gap-6">
               <div className="flex flex-col gap-2">
-                <span className="text-title-lg font-medium text-orange-6 tracking-wide">{fundador.content.eyebrow}</span>
+                {fundador.content.eyebrow && (
+                  <span className="text-title-lg font-medium text-orange-6 tracking-wide">
+                    {fundador.content.eyebrow}
+                  </span>
+                )}
                 <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">
                   {fundador.content.sectionTitle}
                 </h2>
@@ -112,10 +122,14 @@ export default async function SobreNosotrosPage({ params }: { params: Promise<{ 
                   </div>
                   <div className="flex flex-col gap-3 lg:gap-4 pr-0 lg:pr-14">
                     <span className="text-display-sm font-bold text-black-11">{fundador.content.name}</span>
-                    <span className="text-headline-sm font-medium text-orange-6 -mt-1 lg:-mt-2">
-                      {fundador.content.role}
-                    </span>
-                    <p className="text-headline-sm text-black-7 lg:text-black-8">{fundador.content.bio}</p>
+                    {fundador.content.role && (
+                      <span className="text-headline-sm font-medium text-orange-6 -mt-1 lg:-mt-2">
+                        {fundador.content.role}
+                      </span>
+                    )}
+                    {fundador.content.bio && (
+                      <p className="text-headline-sm text-black-7 lg:text-black-8">{fundador.content.bio}</p>
+                    )}
                     <div className="flex flex-wrap gap-2">
                       {fundador.content.tags.map((tag) => (
                         <span
@@ -136,14 +150,20 @@ export default async function SobreNosotrosPage({ params }: { params: Promise<{ 
             <section className="flex flex-col gap-4 lg:gap-8">
               <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-2 lg:gap-4">
                 <div className="flex flex-col gap-2">
-                  <span className="text-title-lg font-medium text-orange-6 tracking-wide">{equipoIntro.content.eyebrow}</span>
+                  {equipoIntro.content.eyebrow && (
+                    <span className="text-title-lg font-medium text-orange-6 tracking-wide">
+                      {equipoIntro.content.eyebrow}
+                    </span>
+                  )}
                   <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">
                     {equipoIntro.content.title}
                   </h2>
                 </div>
-                <span className="text-headline-sm text-black-8 lg:text-black-7 max-w-[340px] lg:text-right">
-                  {equipoIntro.content.subtitle}
-                </span>
+                {equipoIntro.content.subtitle && (
+                  <span className="text-headline-sm text-black-8 lg:text-black-7 max-w-[340px] lg:text-right">
+                    {equipoIntro.content.subtitle}
+                  </span>
+                )}
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                 {teamMembers.map((m) => (
@@ -153,9 +173,11 @@ export default async function SobreNosotrosPage({ params }: { params: Promise<{ 
                     </div>
                     <div className="flex flex-col gap-1">
                       <span className="text-headline-sm lg:text-headline-lg font-bold text-black-11">{m.name}</span>
-                      <span className="text-title-lg lg:text-headline-sm text-black-8 lg:text-black-7">
-                        {m.specialty}
-                      </span>
+                      {m.specialty && (
+                        <span className="text-title-lg lg:text-headline-sm text-black-8 lg:text-black-7">
+                          {m.specialty}
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -166,11 +188,17 @@ export default async function SobreNosotrosPage({ params }: { params: Promise<{ 
           {laboratorio.visible && (
             <section className="flex flex-col gap-4 lg:gap-8">
               <div className="flex flex-col gap-2">
-                <span className="text-title-lg font-medium text-orange-6 tracking-wide">{laboratorio.content.eyebrow}</span>
+                {laboratorio.content.eyebrow && (
+                  <span className="text-title-lg font-medium text-orange-6 tracking-wide">
+                    {laboratorio.content.eyebrow}
+                  </span>
+                )}
                 <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">{laboratorio.content.title}</h2>
-                <p className="text-headline-sm lg:text-headline-md text-black-8 max-w-[720px]">
-                  {laboratorio.content.description}
-                </p>
+                {laboratorio.content.description && (
+                  <p className="text-headline-sm lg:text-headline-md text-black-8 max-w-[720px]">
+                    {laboratorio.content.description}
+                  </p>
+                )}
               </div>
               <div className="flex gap-3 lg:gap-4 w-full h-[220px] lg:h-[420px]">
                 <div className="relative flex-[1.6] h-full rounded-[16px] lg:rounded-[24px] overflow-hidden">
@@ -201,7 +229,7 @@ export default async function SobreNosotrosPage({ params }: { params: Promise<{ 
                     <Image src="/icon-check-circle.svg" alt="" width={38} height={38} />
                     <div className="flex flex-col gap-1">
                       <span className="text-headline-md font-semibold text-black-11">{d.title}</span>
-                      <span className="text-headline-sm text-black-7">{d.desc}</span>
+                      {d.desc && <span className="text-headline-sm text-black-7">{d.desc}</span>}
                     </div>
                   </div>
                 ))}

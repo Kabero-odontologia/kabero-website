@@ -11,9 +11,9 @@ export const sobreNosotrosEncabezadoDefault: CenteredHeroContent = {
 // --- Nuestra historia ----------------------------------------------------
 
 export const historiaContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   title: z.string().min(1),
-  description: z.string().min(1),
+  description: z.string(),
   photo: z.string().min(1),
 });
 export type HistoriaContent = z.infer<typeof historiaContentSchema>;
@@ -29,11 +29,11 @@ export const historiaDefault: HistoriaContent = {
 // --- Fundador --------------------------------------------------------------
 
 export const fundadorContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   sectionTitle: z.string().min(1),
   name: z.string().min(1),
-  role: z.string().min(1),
-  bio: z.string().min(1),
+  role: z.string(),
+  bio: z.string(),
   tags: z.array(z.string().min(1)).min(1),
   photo: z.string().min(1),
 });
@@ -52,9 +52,9 @@ export const fundadorDefault: FundadorContent = {
 // --- Equipo (intro text only — the grid itself comes from TeamMember) -----
 
 export const equipoIntroContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   title: z.string().min(1),
-  subtitle: z.string().min(1),
+  subtitle: z.string(),
 });
 export type EquipoIntroContent = z.infer<typeof equipoIntroContentSchema>;
 
@@ -67,9 +67,9 @@ export const equipoIntroDefault: EquipoIntroContent = {
 // --- Nuestro laboratorio (new) ---------------------------------------------
 
 export const laboratorioContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   title: z.string().min(1),
-  description: z.string().min(1),
+  description: z.string(),
   photos: z.array(z.string().min(1)).length(3),
 });
 export type LaboratorioContent = z.infer<typeof laboratorioContentSchema>;
@@ -84,7 +84,7 @@ export const laboratorioDefault: LaboratorioContent = {
 
 // --- Diferenciales -----------------------------------------------------
 
-const differentiatorSchema = z.object({ title: z.string().min(1), desc: z.string().min(1) });
+const differentiatorSchema = z.object({ title: z.string().min(1), desc: z.string() });
 
 export const diferencialesContentSchema = z.object({
   title: z.string().min(1),

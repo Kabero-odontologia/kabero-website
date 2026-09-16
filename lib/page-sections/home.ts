@@ -9,9 +9,9 @@ const labelTuple = z.tuple([z.string().min(1), z.string().min(1)]);
 // --- Hero ---------------------------------------------------------------
 
 export const heroContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   title: z.string().min(1),
-  subtitle: z.string().min(1),
+  subtitle: z.string(),
   photo: z.string().min(1),
   badgeNumber: z.string().min(1),
   badgeLabel: labelTuple,
@@ -38,9 +38,9 @@ export const heroDefault: HeroContent = {
 // at import time (they're created by the seed script, not known statically).
 
 export const especialidadesContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   title: z.string().min(1),
-  subtitle: z.string().min(1),
+  subtitle: z.string(),
   treatmentIds: z.array(z.string()).min(2).max(4),
 });
 export type EspecialidadesContent = z.infer<typeof especialidadesContentSchema>;
@@ -61,7 +61,7 @@ export const especialidadesDefault: EspecialidadesContent = {
 // visible case studies by `order` in that case.
 
 export const casosDeExitoContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   title: z.string().min(1),
   // .default([]) so rows saved before this field existed still parse
   // successfully (falling back to the "auto" sentinel) instead of the whole
@@ -85,13 +85,13 @@ const statSchema = z.object({
 
 export const videoSectionContentSchema = z.object({
   heading: z.string().min(1),
-  eyebrowDesktop: z.string().min(1),
+  eyebrowDesktop: z.string(),
   mediaType: z.enum(["image", "video"]),
   backgroundPhoto: z.string().min(1),
   videoUrl: z.string().nullable(),
   stats: z.tuple([statSchema, statSchema, statSchema]),
-  locationLine1: z.string().min(1),
-  locationLine2: z.string().min(1),
+  locationLine1: z.string(),
+  locationLine2: z.string(),
 });
 export type VideoSectionContent = z.infer<typeof videoSectionContentSchema>;
 
@@ -115,13 +115,13 @@ export const videoSectionDefault: VideoSectionContent = {
 const stepSchema = z.object({
   num: z.string().min(1),
   title: z.string().min(1),
-  desc: z.string().min(1),
+  desc: z.string(),
   photo: z.string().min(1),
   alt: z.string().min(1),
 });
 
 export const howItWorksContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   title: z.string().min(1),
   steps: z.tuple([stepSchema, stepSchema, stepSchema, stepSchema]),
 });
@@ -165,7 +165,7 @@ export const howItWorksDefault: HowItWorksContent = {
 // --- Contacto (intro text only — map/whatsapp/social live in SiteSettings) --
 
 export const contactoContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string(),
   title: z.string().min(1),
 });
 export type ContactoContent = z.infer<typeof contactoContentSchema>;

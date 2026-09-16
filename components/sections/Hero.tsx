@@ -33,7 +33,9 @@ export default function Hero({ content }: { content: HeroContent }) {
         {/* Mobile layout: eyebrow/title -> image -> subtitle -> stacked buttons */}
         <div className="flex lg:hidden flex-col gap-4 items-center text-center">
           <div className="flex flex-col gap-2 items-center">
-            <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+            {content.eyebrow && (
+              <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+            )}
             <h1 className="text-display-md font-bold text-black-11">{content.title}</h1>
           </div>
 
@@ -48,7 +50,7 @@ export default function Hero({ content }: { content: HeroContent }) {
             )}
           </div>
 
-          <p className="text-headline-sm text-black-8">{content.subtitle}</p>
+          {content.subtitle && <p className="text-headline-sm text-black-8">{content.subtitle}</p>}
 
           <div className="flex flex-col gap-3 items-stretch w-full mt-2">
             <Button href="https://wa.me/59171796997" variant="primary" size="sm" className="w-full">
@@ -64,10 +66,14 @@ export default function Hero({ content }: { content: HeroContent }) {
         <div className="hidden lg:flex flex-row gap-12 items-start">
           <div className="flex-1 flex flex-col gap-5 items-start">
             <div className="flex flex-col gap-2 items-start">
-              <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+              {content.eyebrow && (
+                <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+              )}
               <h1 className="text-display-lg font-bold text-black-11 max-w-[520px]">{content.title}</h1>
             </div>
-            <p className="text-headline-md text-black-8 max-w-[460px]">{content.subtitle}</p>
+            {content.subtitle && (
+              <p className="text-headline-md text-black-8 max-w-[460px]">{content.subtitle}</p>
+            )}
             <div className="flex gap-4 items-center">
               <Button href="https://wa.me/59171796997" variant="primary" size="sm">
                 {t("contactanos")}

@@ -10,7 +10,7 @@ export const tratamientosEncabezadoDefault: CenteredHeroContent = {
 
 export const tratamientosCtaBandContentSchema = z.object({
   headline: z.string().min(1),
-  subtitle: z.string().min(1),
+  subtitle: z.string(),
   buttonLabel: z.string().min(1),
   buttonHref: z.string().min(1),
   photo: z.string().min(1),

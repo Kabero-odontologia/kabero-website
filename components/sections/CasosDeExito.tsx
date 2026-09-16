@@ -38,7 +38,9 @@ export default async function CasosDeExito({ content }: { content: CasosDeExitoC
     <section className="lg:border lg:border-white/[0.08] lg:rounded-[32px] flex flex-col gap-6 lg:gap-10 items-start lg:py-0 w-full">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2 lg:gap-0 w-full">
         <div className="flex flex-col gap-2 items-start">
-          <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+          {content.eyebrow && (
+            <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+          )}
           <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">{content.title}</h2>
         </div>
         <Link

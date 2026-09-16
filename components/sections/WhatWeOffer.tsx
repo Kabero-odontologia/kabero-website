@@ -24,7 +24,7 @@ export default function WhatWeOffer({ items }: WhatWeOfferProps) {
                   <span className="text-headline-sm lg:text-headline-md font-semibold text-black-11">
                     {item.title}
                   </span>
-                  <span className="text-title-lg lg:text-headline-sm text-black-7">{item.desc}</span>
+                  {item.desc && <span className="text-title-lg lg:text-headline-sm text-black-7">{item.desc}</span>}
                 </div>
               </div>
             ))}

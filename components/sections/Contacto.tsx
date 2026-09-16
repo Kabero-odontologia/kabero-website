@@ -164,7 +164,9 @@ export default function Contacto({ content, mapsQuery, mapsLink, businessHours }
   return (
     <section id="horario" className="flex flex-col gap-6 lg:gap-10 items-start scroll-mt-24">
       <div className="flex flex-col gap-3 items-start">
-        <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+        {content.eyebrow && (
+          <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+        )}
         <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">{content.title}</h2>
       </div>
 

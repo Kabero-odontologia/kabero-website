@@ -31,7 +31,7 @@ export async function createTeamMember(
   await requireAdminSession();
 
   const { name, specialty, photo, visible } = readTeamMemberForm(formData);
-  if (!name || !specialty) return { error: "Completá el nombre y la especialidad." };
+  if (!name) return { error: "Completá el nombre." };
   if (!photo) return { error: "Subí una foto." };
 
   const maxOrder = await prisma.teamMember.aggregate({ _max: { order: true } });
@@ -52,7 +52,7 @@ export async function updateTeamMember(
   await requireAdminSession();
 
   const { name, specialty, photo, visible } = readTeamMemberForm(formData);
-  if (!name || !specialty) return { error: "Completá el nombre y la especialidad." };
+  if (!name) return { error: "Completá el nombre." };
   if (!photo) return { error: "Subí una foto." };
 
   const translations = await translateFields({ specialty });

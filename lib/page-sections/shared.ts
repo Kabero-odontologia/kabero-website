@@ -6,7 +6,7 @@ import { z } from "zod";
 // default gradient.
 export const ctaBandContentSchema = z.object({
   headline: z.string().min(1),
-  subtitle: z.string().min(1),
+  subtitle: z.string().default(""),
   buttonLabel: z.string().min(1),
   buttonHref: z.string().min(1),
   backgroundImage: z.string().nullable().default(null),
@@ -20,9 +20,9 @@ export type CtaBandContent = z.infer<typeof ctaBandContentSchema>;
 // Tratamientos, Sobre Nosotros, Casos Reales all use the same eyebrow/title/
 // subtitle shape.
 export const centeredHeroContentSchema = z.object({
-  eyebrow: z.string().min(1),
+  eyebrow: z.string().default(""),
   title: z.string().min(1),
-  subtitle: z.string().min(1),
+  subtitle: z.string().default(""),
 });
 
 export type CenteredHeroContent = z.infer<typeof centeredHeroContentSchema>;

@@ -25,10 +25,12 @@ export default async function Especialidades({ content }: { content: Especialida
     <section className="flex flex-col lg:flex-row gap-6 lg:gap-14 items-start">
       <div className="flex-1 flex flex-col gap-5 items-start">
         <div className="flex flex-col gap-2 items-start">
-          <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+          {content.eyebrow && (
+            <span className="text-title-lg font-medium text-orange-6 tracking-wide">{content.eyebrow}</span>
+          )}
           <h2 className="text-headline-lg lg:text-display-sm font-bold text-black-11">{content.title}</h2>
         </div>
-        <p className="text-headline-sm text-black-8">{content.subtitle}</p>
+        {content.subtitle && <p className="text-headline-sm text-black-8">{content.subtitle}</p>}
         <Button href="/tratamientos" variant="outline" size="sm" className="self-start">
           {t("verTodos")}
         </Button>

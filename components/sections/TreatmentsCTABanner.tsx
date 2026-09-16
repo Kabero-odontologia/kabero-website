@@ -31,7 +31,7 @@ export default function TreatmentsCTABanner({
       </div>
       <div className="bg-black-11 rounded-b-[32px] lg:rounded-b-none lg:rounded-r-[32px] flex-1 flex flex-col justify-center gap-4 px-6 lg:px-14 py-10">
         <h2 className="text-display-md font-bold text-black-1 whitespace-pre-line">{headline}</h2>
-        <p className="text-headline-md text-black-8 max-w-[500px]">{subtitle}</p>
+        {subtitle && <p className="text-headline-md text-black-8 max-w-[500px]">{subtitle}</p>}
         <Button href={buttonHref} variant="primary" size="sm" className="self-start">
           {buttonLabel}
         </Button>
