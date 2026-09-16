@@ -8,6 +8,11 @@
 #   2. Redirect new admin uploads onto the persistent disk too, seeding it
 #      from the repo's checked-in photos on the very first boot only (so a
 #      later redeploy never overwrites uploads added after that).
+#   3. Kick every statically-generated public page into regenerating itself
+#      once the server is actually up — `next build` ran against an empty
+#      database (the disk isn't mounted during the build step), so without
+#      this every deploy would otherwise show an empty site for up to an
+#      hour until the page's own ISR interval happens to expire.
 set -e
 
 DISK_PATH="${RENDER_DISK_PATH:-/var/data}"
@@ -20,4 +25,31 @@ rm -rf public/uploads
 ln -s "$DISK_PATH/uploads" public/uploads
 
 npx prisma migrate deploy
-exec npm run start
+
+npm run start &
+SERVER_PID=$!
+
+node -e "
+const port = process.env.PORT || 3000;
+const secret = process.env.SESSION_SECRET;
+(async () => {
+  for (let i = 0; i < 60; i++) {
+    try {
+      const res = await fetch('http://localhost:' + port + '/');
+      if (res.status < 500) break;
+    } catch {}
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+  try {
+    const res = await fetch('http://localhost:' + port + '/api/admin/revalidate-all', {
+      method: 'POST',
+      headers: { 'x-internal-secret': secret },
+    });
+    console.log('post-deploy revalidate-all:', res.status);
+  } catch (e) {
+    console.error('post-deploy revalidate-all failed:', e.message);
+  }
+})();
+" &
+
+wait "$SERVER_PID"
