@@ -17,11 +17,15 @@ export async function createAdminUser(
   await requireAdminSession();
 
   const username = String(formData.get("username") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   const confirmPassword = String(formData.get("confirmPassword") ?? "");
 
-  if (!username || !password) {
-    return { error: "Completá el usuario y la contraseña." };
+  if (!username || !email || !password) {
+    return { error: "Completá el usuario, el email y la contraseña." };
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { error: "El email no es válido." };
   }
   if (password.length < 8) {
     return { error: "La contraseña necesita al menos 8 caracteres." };
@@ -30,15 +34,62 @@ export async function createAdminUser(
     return { error: "Las contraseñas no coinciden." };
   }
 
-  const existing = await prisma.admin.findUnique({ where: { username } });
-  if (existing) {
+  const [existingUsername, existingEmail] = await Promise.all([
+    prisma.admin.findUnique({ where: { username } }),
+    prisma.admin.findUnique({ where: { email } }),
+  ]);
+  if (existingUsername) {
     return { error: "Ya existe un usuario con ese nombre." };
+  }
+  if (existingEmail) {
+    return { error: "Ya existe un usuario con ese email." };
   }
 
   const passwordHash = await bcrypt.hash(password, 10);
-  await prisma.admin.create({ data: { username, passwordHash } });
+  await prisma.admin.create({ data: { username, email, passwordHash } });
 
   revalidatePath("/admin/usuarios");
+  return { success: true };
+}
+
+export interface ChangePasswordState {
+  error?: string;
+  success?: boolean;
+}
+
+export async function changeOwnPassword(
+  _prevState: ChangePasswordState,
+  formData: FormData
+): Promise<ChangePasswordState> {
+  const session = await requireAdminSession();
+
+  const currentPassword = String(formData.get("currentPassword") ?? "");
+  const newPassword = String(formData.get("newPassword") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
+
+  if (!currentPassword || !newPassword) {
+    return { error: "Completá todos los campos." };
+  }
+  if (newPassword.length < 8) {
+    return { error: "La contraseña nueva necesita al menos 8 caracteres." };
+  }
+  if (newPassword !== confirmPassword) {
+    return { error: "Las contraseñas nuevas no coinciden." };
+  }
+
+  const admin = await prisma.admin.findUnique({ where: { id: session.adminId } });
+  if (!admin) {
+    return { error: "No se encontró tu usuario." };
+  }
+
+  const valid = await bcrypt.compare(currentPassword, admin.passwordHash);
+  if (!valid) {
+    return { error: "La contraseña actual no es correcta." };
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+  await prisma.admin.update({ where: { id: admin.id }, data: { passwordHash } });
+
   return { success: true };
 }
 

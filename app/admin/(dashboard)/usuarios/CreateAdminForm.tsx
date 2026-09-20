@@ -30,6 +30,20 @@ export default function CreateAdminForm() {
           />
         </div>
 
+        <div className="flex flex-col gap-2">
+          <label htmlFor="email" className="text-title-lg font-medium text-white/60 tracking-wide">
+            EMAIL
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="off"
+            placeholder="Para recuperar la contraseña si la olvida"
+            className="bg-white/[0.06] border border-white/10 rounded-md px-4 py-3 text-headline-sm text-white placeholder:text-white/30 outline-none focus:border-white/30 transition-colors"
+          />
+        </div>
+
         <PasswordField id="password" label="CONTRASEÑA" autoComplete="new-password" />
         <PasswordField id="confirmPassword" label="REPETIR CONTRASEÑA" autoComplete="new-password" />
 

@@ -2,6 +2,7 @@ import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import DeleteAdminButton from "./DeleteAdminButton";
 import CreateAdminForm from "./CreateAdminForm";
+import ChangePasswordForm from "./ChangePasswordForm";
 
 export default async function UsuariosPage() {
   const [admins, session] = await Promise.all([
@@ -33,7 +34,7 @@ export default async function UsuariosPage() {
                     {isSelf && <span className="text-white/40 font-normal"> (vos)</span>}
                   </span>
                   <span className="text-title-md text-white/40">
-                    Creado el {admin.createdAt.toLocaleDateString("es-BO")}
+                    {admin.email ? `${admin.email} · ` : ""}Creado el {admin.createdAt.toLocaleDateString("es-BO")}
                   </span>
                 </div>
                 {!isSelf && admins.length > 1 && <DeleteAdminButton id={admin.id} username={admin.username} />}
@@ -42,8 +43,9 @@ export default async function UsuariosPage() {
           })}
         </div>
 
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 flex flex-col gap-6">
           <CreateAdminForm />
+          <ChangePasswordForm />
         </div>
       </div>
     </div>

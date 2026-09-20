@@ -11,10 +11,13 @@ datasource db {
 }
 
 model Admin {
-  id           String   @id @default(cuid())
-  username     String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
+  id               String    @id @default(cuid())
+  username         String    @unique
+  email            String?   @unique
+  passwordHash     String
+  resetTokenHash   String?   @unique
+  resetTokenExpiry DateTime?
+  createdAt        DateTime  @default(now())
 }
 
 model Treatment {

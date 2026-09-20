@@ -9,6 +9,9 @@ import { routing } from "@/i18n/routing";
 // that Proxy should stay fast and not do real auth). Every admin Server Action
 // independently re-checks the real, signed session via requireAdminSession().
 const SESSION_COOKIE = "kabero_admin_session";
+// Reachable without a session — the login page itself, and the forgot/reset
+// password flow (which exists precisely to recover access with no session).
+const PUBLIC_ADMIN_PATHS = ["/admin/login", "/admin/olvide-password", "/admin/restablecer-password"];
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -19,7 +22,7 @@ export function proxy(request: NextRequest) {
   // resolve auth here and return immediately, before next-intl ever sees the
   // request, so locale negotiation/redirects never run on admin routes.
   if (pathname.startsWith("/admin")) {
-    if (pathname !== "/admin/login") {
+    if (!PUBLIC_ADMIN_PATHS.includes(pathname)) {
       const hasSession = request.cookies.has(SESSION_COOKIE);
       if (!hasSession) {
         const loginUrl = new URL("/admin/login", request.url);

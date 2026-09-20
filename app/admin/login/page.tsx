@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useActionState } from "react";
 import PasswordField from "@/components/admin/PasswordField";
 import { loginAction, type LoginState } from "./actions";
@@ -57,6 +58,13 @@ export default function AdminLoginPage() {
             placeholder="••••••••"
             required
           />
+
+          <Link
+            href="/admin/olvide-password"
+            className="text-title-lg text-white/45 hover:text-white/70 -mt-2 self-end transition-colors"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
 
           {state?.error && (
             <p className="text-headline-sm text-red-400 bg-red-400/10 border border-red-400/20 rounded-md px-4 py-3">
