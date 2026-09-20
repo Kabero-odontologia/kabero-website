@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -21,6 +22,21 @@ export async function generateStaticParams() {
 // (as happened on the very first deploy) the build ran against an empty
 // database because the persistent disk isn't mounted during the build step.
 export const revalidate = 3600;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const row = await prisma.treatment.findUnique({ where: { slug } });
+  if (!row || !row.visible) return {};
+  const treatment = localize(row, row.translations, locale);
+  return {
+    title: treatment.title,
+    description: treatment.shortDesc || treatment.fullDesc,
+  };
+}
 
 export default async function TreatmentPage({
   params,

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -19,6 +20,25 @@ import {
 // (as happened on the very first deploy) the build ran against an empty
 // database because the persistent disk isn't mounted during the build step.
 export const revalidate = 3600;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const encabezado = await getPageSection(
+    "tratamientos",
+    "centered-hero",
+    centeredHeroContentSchema,
+    tratamientosEncabezadoDefault,
+    locale
+  );
+  return {
+    title: "Tratamientos",
+    ...(encabezado.content.subtitle && { description: encabezado.content.subtitle }),
+  };
+}
 
 export default async function TratamientosPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

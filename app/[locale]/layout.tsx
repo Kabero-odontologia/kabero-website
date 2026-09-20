@@ -25,7 +25,14 @@ export async function generateMetadata({
   const settings = row ? localize(row, row.translations, locale) : null;
   return {
     metadataBase: new URL("https://kabero.org"),
-    title: settings?.seoTitle || FALLBACK_TITLE,
+    // `template` lets each page set just its own short title (e.g. "Tratamientos")
+    // and have it become "Tratamientos | Kabero" — without this, every page
+    // showed the exact same title in search results (which is what prompted
+    // this), since none of them overrode the root's title before.
+    title: {
+      default: settings?.seoTitle || FALLBACK_TITLE,
+      template: "%s | Kabero",
+    },
     description: settings?.seoDescription || FALLBACK_DESCRIPTION,
   };
 }
