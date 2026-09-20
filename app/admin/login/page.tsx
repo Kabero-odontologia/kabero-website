@@ -38,7 +38,7 @@ export default function AdminLoginPage() {
         <form action={formAction} className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="username" className="text-title-lg font-medium text-white/60 tracking-wide">
-              USUARIO
+              USUARIO O EMAIL
             </label>
             <input
               id="username"
