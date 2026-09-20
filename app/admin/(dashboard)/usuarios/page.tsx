@@ -1,8 +1,8 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import DeleteAdminButton from "./DeleteAdminButton";
 import CreateAdminForm from "./CreateAdminForm";
-import ChangePasswordForm from "./ChangePasswordForm";
 
 export default async function UsuariosPage() {
   const [admins, session] = await Promise.all([
@@ -20,31 +20,35 @@ export default async function UsuariosPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-3 flex flex-col gap-6">
-          <div className="flex flex-col gap-3">
-            {admins.map((admin) => {
-              const isSelf = admin.id === session?.adminId;
-              return (
-                <div
-                  key={admin.id}
-                  className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-lg p-4 flex items-center justify-between gap-3"
-                >
-                  <div className="flex flex-col">
-                    <span className="text-headline-sm font-medium text-white">
-                      {admin.username}
-                      {isSelf && <span className="text-white/40 font-normal"> (vos)</span>}
-                    </span>
-                    <span className="text-title-md text-white/40">
-                      {admin.email ? `${admin.email} · ` : ""}Creado el {admin.createdAt.toLocaleDateString("es-BO")}
-                    </span>
-                  </div>
+        <div className="lg:col-span-3 flex flex-col gap-3">
+          {admins.map((admin) => {
+            const isSelf = admin.id === session?.adminId;
+            return (
+              <div
+                key={admin.id}
+                className="bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-lg p-4 flex items-center justify-between gap-3"
+              >
+                <div className="flex flex-col">
+                  <span className="text-headline-sm font-medium text-white">
+                    {admin.username}
+                    {isSelf && <span className="text-white/40 font-normal"> (vos)</span>}
+                  </span>
+                  <span className="text-title-md text-white/40">
+                    {admin.email ? `${admin.email} · ` : ""}Creado el {admin.createdAt.toLocaleDateString("es-BO")}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 shrink-0">
+                  <Link
+                    href={`/admin/usuarios/${admin.id}`}
+                    className="px-3 py-2 rounded text-title-md font-medium text-white/60 hover:bg-white/[0.08] hover:text-white transition-colors"
+                  >
+                    Editar
+                  </Link>
                   {!isSelf && admins.length > 1 && <DeleteAdminButton id={admin.id} username={admin.username} />}
                 </div>
-              );
-            })}
-          </div>
-
-          <ChangePasswordForm />
+              </div>
+            );
+          })}
         </div>
 
         <div className="lg:col-span-2">
