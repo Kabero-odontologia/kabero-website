@@ -12,7 +12,11 @@ export async function sendPasswordResetEmail(to: string, resetUrl: string) {
     return;
   }
 
-  await resend.emails.send({
+  // resend.emails.send() reports failures via `{ error }`, not by throwing —
+  // log it rather than let it surface as an unhandled error to the admin
+  // requesting the reset (e.g. while kabero.org is still pending domain
+  // verification in Resend).
+  const { error } = await resend.emails.send({
     from: "Kabero Admin <no-reply@kabero.org>",
     to,
     subject: "Restablecer tu contraseña — Kabero Admin",
@@ -22,4 +26,7 @@ export async function sendPasswordResetEmail(to: string, resetUrl: string) {
       <p>Este link vence en 1 hora. Si no fuiste vos, podés ignorar este email.</p>
     `,
   });
+  if (error) {
+    console.error(`[email] Resend failed to send password reset to ${to}:`, error);
+  }
 }
